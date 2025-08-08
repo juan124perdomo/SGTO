@@ -1,4 +1,5 @@
-
+import { Link } from "react-router-dom";
+import React from 'react';  
 import '../style/login.css'; // Importamos los estilos específicos del login
 
 function Login() {
@@ -27,8 +28,10 @@ return (
         />
         </label>
 
-        <button type="submit">Entrar</button>
-        <button type="button">Registrarte</button>
+        <button className="enviar" type="submit">Acceso</button>
+        <Link to="/register" className="registrar-btn">
+          Registrarte
+        </Link>
     </form>
     </div>
 );

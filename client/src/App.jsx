@@ -1,12 +1,16 @@
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import './App.css';
-import Login from "./components/login"; // Corregido: El nombre del archivo es con 'L' mayúscula
+import Login from "./components/login";
+import Register from "./components/register";
 
 function App() {
   return (
-    <>
+    <Router>
       <div className="login_register">
-        {/* Corregido: Los componentes en React deben empezar con mayúscula */}
-        <Login />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
 
         <ul className="circles">
           <li></li>
@@ -21,7 +25,7 @@ function App() {
           <li></li>
         </ul>
       </div>
-    </>
+    </Router>
   );
 }
 
