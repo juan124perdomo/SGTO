@@ -7,7 +7,7 @@ function Login() {
 
 
 return (
-    <div className="login-container">
+    <>
     <form >
         <h2>Iniciar Sesión</h2>
 
@@ -33,7 +33,7 @@ return (
           Registrarte
         </Link>
     </form>
-    </div>
+    </>
 );
 }
 
