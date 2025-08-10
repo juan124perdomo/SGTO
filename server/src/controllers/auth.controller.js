@@ -42,19 +42,22 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Validar si faltan datos
     if (!email || !password) {
       return res.status(400).json({ message: "Faltan datos" });
     }
 
-    const userFound = await User.findOne({ email });
+    const userFound = await User.findOne({ email }).select("+password"); // aseguramos que incluya el password
     if (!userFound) {
-      return res.status(400).json({ message: "usuario no encontrado" });
+      return res.status(400).json({ message: "Usuario no encontrado" });
+    }
+
+    if (!userFound.password) {
+      return res.status(500).json({ message: "El usuario no tiene contraseña guardada" });
     }
 
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "contraseña incorrecta" });
+      return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
     const token = await createAccesToken({ id: userFound._id });
@@ -66,7 +69,8 @@ export const login = async (req, res) => {
       telefono: userFound.telefono,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Error en el servidor" });
   }
 };
 

@@ -35,7 +35,7 @@ function Register() {
         </label>
         <label>Telefono
         <input
-            type="number"
+            type="text"
             placeholder="Telefono"
             
             required
