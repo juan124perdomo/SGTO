@@ -5,6 +5,7 @@ import Register from "./components/register";
 
 function App() {
   return (
+    
     <Router>
       <div className="login_register">
         <Routes>

@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import  authRoutes from "./routes/auth.routes.js";
-import taskRoutes from './routes/task.routes.js'; // ajusta la ruta si es necesario
+import ordenesRoutes from './routes/ordenes.routes.js'; // ajusta la ruta si es diferente // ajusta la ruta si es necesario
 
 
 
@@ -11,6 +11,6 @@ app.use(morgan("dev"));
 app.use(express.json()); // <-- Añadir esta línea
 app.use(cookieParser());
 app.use('/api',authRoutes);
-app.use('/api', taskRoutes);
+app.use('/api', ordenesRoutes);
 
 export default app;
