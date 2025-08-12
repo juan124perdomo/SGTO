@@ -2,11 +2,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { AuthProvider } from "./context/AuthContext";
+
 
 function App() {
   return (
     <>
-    <Router>
+    <AuthProvider>
+      <Router>
       <Routes>
         <Route path="/" element={<h1>Inicio</h1>} />
         <Route path="/login" element={<Login />} />
@@ -17,6 +20,9 @@ function App() {
         <Route path="/profile" element={<Register />} />
       </Routes>
     </Router>
+      
+      </AuthProvider>
+    
     </>
   );
 }
