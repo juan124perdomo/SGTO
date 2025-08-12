@@ -62,3 +62,14 @@ button:hover{
     box-shadow: inset 400px 50px 0 0 #054ea7;
     color: rgb(255, 255, 255);
 }
+span{
+    color: #ff0000;
+}
+.errores{
+    background-color: #ff0000;
+    padding: 5px;
+    color: #FFF;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
