@@ -62,6 +62,12 @@ button{
 }
 button:hover{
 
-    box-shadow: inset 400px 50px 0 0 #054ea7;
+    box-shadow: inset 50px 500px 0 0 #054ea7;
     color: rgb(255, 255, 255);
+}
+.link{
+    color: white;
+    text-decoration: none;
+    margin: 5px 0;
+    text-align: center;
 }

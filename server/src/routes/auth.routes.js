@@ -1,15 +1,40 @@
+// Se importa el enrutador de Express para definir las rutas.
 import { Router} from "express";
+// Se importan los controladores que contienen la lógica para cada ruta.
 import {login, logout, register, profile  } from "../controllers/auth.controller.js";
+// Se importa el middleware `authRequired` para proteger rutas que necesitan autenticación.
 import { authRequired } from "../middleware/validateToken.js";
+// Se importa el middleware `validateSchema` para validar los datos de entrada.
 import {validateSchema} from "../middleware/validator.middleware.js";
+// Se importan los esquemas de validación de Zod.
 import { registerSchema, loginSchema } from "../schemas/auth.schema.js";
 
-
+// Se crea una nueva instancia del enrutador.
 const router = Router();
 
+// --- Definición de Rutas de Autenticación ---
+
+// Ruta para registrar un nuevo usuario.
+// POST /api/register
+// 1. `validateSchema(registerSchema)`: Valida que el cuerpo de la petición (req.body) cumpla con el `registerSchema`.
+// 2. `register`: Si la validación es exitosa, ejecuta el controlador de registro.
 router.post("/register",validateSchema(registerSchema),register);
+
+// Ruta para iniciar sesión.
+// POST /api/login
+// 1. `validateSchema(loginSchema)`: Valida los datos de inicio de sesión.
+// 2. `login`: Si la validación es exitosa, ejecuta el controlador de login.
 router.post("/login",validateSchema(loginSchema),login);
+
+// Ruta para cerrar sesión.
+// POST /api/logout
 router.post("/logout", logout);
+
+// Ruta para obtener el perfil del usuario autenticado.
+// GET /api/profile
+// 1. `authRequired`: Este middleware se ejecuta primero. Verifica que haya un token válido en la cookie.
+//    Si no hay token o es inválido, bloquea la petición.
+// 2. `profile`: Si el token es válido, se ejecuta el controlador para obtener los datos del perfil.
 router.get("/profile", authRequired, profile);
 
 export default router;

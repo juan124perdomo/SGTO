@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import '../style/Login.css';
+import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
-
+    // Hook de efecto para cambiar el fondo de la página cuando el componente se monta.
     useEffect(() => {
     // Color de respaldo (fallback)
     document.body.style.background = "#ff0000";
@@ -10,26 +13,55 @@ function Login() {
     document.body.style.backgroundImage =
       "linear-gradient(90deg, #ff0000, #ff00ff, #8d00f1)";
 
+    // La función de retorno de useEffect se ejecuta cuando el componente se desmonta.
+    // Se usa para limpiar los estilos del body.
     return () => {
-      // Limpiar estilos al salir de Register
       document.body.style.background = "";
       document.body.style.backgroundImage = "";
     };
-  }, []);
+  }, []); // El array vacío asegura que el efecto se ejecute solo una vez (al montar).
 
+  // Hook `useForm` de react-hook-form para manejar el estado y validación del formulario.
+  const {register, handleSubmit, formState: { errors }} = useForm();
+  // Se extraen las funciones y estados necesarios del contexto de autenticación.
+  const {signin, isAutenticated, errors: signinErrors} = useAuth();
+  const navigate = useNavigate(); // Hook para la navegación programática.
+
+  // Hook de efecto que se ejecuta cuando `isAutenticated` cambia.
+  // Si el usuario se autentica, se le redirige a la página de órdenes.
+  useEffect(() => {
+    if (isAutenticated) {
+      navigate("/ordenes");
+    }
+  }, [isAutenticated, navigate]);
+
+  // Función que se ejecuta al enviar el formulario.
+  // `handleSubmit` de react-hook-form valida el formulario antes de llamar a `signin`.
+  const onSubmit = handleSubmit((data) => {
+    signin(data);
+  });
+ 
 
   return (
     <div>
-      <form action="">
-        <h1>Iniciar Sesion</h1>
+     <form onSubmit={onSubmit}>
+      {/* Muestra los errores de inicio de sesión que vienen del backend */}
+      {signinErrors.map((error, i)=>(
+      <div className="errores" key={i}>
+        {error}
+      </div>
+    ))}
         
-        <input type="email" placeholder="Correo electronico" />
+        <h1>Iniciar Sesión</h1>
 
-        <input type="password" placeholder="Contraseña" />
-      
-      <button type="submit">Iniciar Sesion</button>
-
-      
+        {/* Campos del formulario */}
+        <input type="text" placeholder="Correo electronico" {...register("email", { required: true })} />
+        {errors.email && <span>Este campo es requerido</span>}
+        <input type="password" placeholder="Contraseña" {...register("password", { required: true })} />
+        {errors.password && <span>Este campo es requerido</span>}
+        
+        <button type="submit">Iniciar Sesión</button>
+        <Link className="link" to="/register">No tienes cuenta? Registrate</Link>
       </form>
     </div>
 
