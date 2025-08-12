@@ -42,7 +42,9 @@ export const register =  async (req, res) => {
     res.cookie("token",token)
     // 7. RESPUESTA AL CLIENTE: Responde con los datos del usuario (sin la contraseña) para que el frontend
     // pueda actualizar su estado y mostrar la información del usuario.
+    // ESTE ES EL OBJETO QUE SE DEVUELVE AL REGISTRARSE
    res.json({
+    message: "Usuario registrado y autenticado satisfactoriamente",
     id: userSaved._id,
     username: userSaved.username,
     email: userSaved.email,
@@ -92,7 +94,9 @@ export const login = async (req, res) => {
     const token = await createAccesToken({ id: userFound._id });
     res.cookie("token", token);
     // 5. RESPUESTA AL CLIENTE: Se responde con los datos públicos del usuario.
+    // ESTE ES EL OBJETO QUE SE DEVUELVE AL INICIAR SESIÓN
     res.json({
+      message: "Autenticación satisfactoria",
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
@@ -141,8 +145,8 @@ export const profile = async(req, res) => {
     username: userFound.username,
     email: userFound.email,
     telefono: userFound.telefono,
-    createAt: userFound.createAt,
-    updateAt: userFound.updateAt,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt,
   });
   
   

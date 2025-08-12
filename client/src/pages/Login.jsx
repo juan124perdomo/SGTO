@@ -24,7 +24,7 @@ function Login() {
   // Hook `useForm` de react-hook-form para manejar el estado y validación del formulario.
   const {register, handleSubmit, formState: { errors }} = useForm();
   // Se extraen las funciones y estados necesarios del contexto de autenticación.
-  const {signin, isAutenticated, errors: signinErrors} = useAuth();
+  const {signin, isAutenticated, errors: signinErrors, successMessage} = useAuth();
   const navigate = useNavigate(); // Hook para la navegación programática.
 
   // Hook de efecto que se ejecuta cuando `isAutenticated` cambia.
@@ -51,6 +51,11 @@ function Login() {
         {error}
       </div>
     ))}
+
+      {/* Muestra el mensaje de éxito si existe */}
+      {successMessage && (
+        <div className="successes">{successMessage}</div>
+      )}
         
         <h1>Iniciar Sesión</h1>
 

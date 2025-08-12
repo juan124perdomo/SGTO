@@ -27,7 +27,7 @@ function Register() {
   // `signup`: función para registrar un usuario.
   // `isAutenticated`: booleano que indica si el usuario está autenticado.
   // `registerErrors`: array con errores que vienen del backend durante el registro.
-  const { signup, isAutenticated, errors: registerErrors } = useAuth();
+  const { signup, isAutenticated, errors: registerErrors, successMessage } = useAuth();
   // Hook `useNavigate` de react-router-dom para la navegación programática.
   const navigate = useNavigate();
 
@@ -55,6 +55,10 @@ function Register() {
         {error}
       </div>
     ))}
+        {/* Muestra el mensaje de éxito si existe */}
+        {successMessage && (
+          <div className="successes">{successMessage}</div>
+        )}
         <h1>Registrarse</h1>
         {/* Campos del formulario de registro. `register` los vincula con react-hook-form. */}
         <input type="text" placeholder="Nombre" {...register("username", { required: true })} />

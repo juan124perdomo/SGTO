@@ -26,6 +26,8 @@ export const AuthProvider = ({ children }) => {
   const [isAutenticated, setIsAutenticated] = useState(false);
   // `errors`: Un array para almacenar los mensajes de error que vienen del backend.
   const [errors, setError] = useState([]);
+  // `successMessage`: Un string para almacenar el mensaje de éxito del backend.
+  const [successMessage, setSuccessMessage] = useState("");
 
   // --- FUNCIONES DE AUTENTICACIÓN ---
 
@@ -34,10 +36,11 @@ export const AuthProvider = ({ children }) => {
     try {
       // Llama a la API del backend para registrar al usuario.
       const res = await registerRequest(user);
-      // Si el registro es exitoso, actualiza los estados.
+      
+      // Si el registro es exitoso, actualiza los estados y guarda el mensaje de éxito.
       setUser(res.data);
       setIsAutenticated(true);
-      setError([]); // Limpia cualquier error previo.
+      setSuccessMessage(res.data.message);
     } catch (error) {
       // Si hay un error, se captura y se actualiza el estado de errores.
       // La respuesta del backend puede venir en diferentes formatos, aquí se normaliza a un array.
@@ -57,10 +60,10 @@ export const AuthProvider = ({ children }) => {
     try {
       // Llama a la API del backend para iniciar sesión.
       const res = await loginRequest(user);
-      // Si el inicio de sesión es exitoso, actualiza los estados.
+      // Si el inicio de sesión es exitoso, actualiza los estados y guarda el mensaje de éxito.
       setUser(res.data);
       setIsAutenticated(true);
-      setError([]); // Limpia cualquier error previo.
+      setSuccessMessage(res.data.message);
     } catch (error) {
       // Si hay un error, se captura y se actualiza el estado de errores.
       let payload = error.response?.data;
@@ -86,11 +89,22 @@ export const AuthProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [errors]);
+
+  // Este useEffect se encarga de limpiar el mensaje de éxito después de 5 segundos.
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
+      // Se retorna una función de limpieza para el temporizador.
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
   
   return (
     // Se provee el contexto con los valores (estados y funciones) a los componentes hijos.
-    // Cualquier componente envuelto por AuthProvider podrá acceder a `signup`, `user`, `isAutenticated`, etc.
-    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin }}>
+    // Cualquier componente envuelto por AuthProvider podrá acceder a `signup`, `user`, `isAutenticated`, `successMessage`, etc.
+    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin, successMessage }}>
       {children}
     </AuthContext.Provider>
   );
