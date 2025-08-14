@@ -8,10 +8,18 @@ import './App.css';
 // Se importan los componentes de las páginas que se usarán en las rutas.
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import HomePage from "./pages/HomePage"; "./pages/HomePage";
+import Ordenes from "./pages/ordenes";
+import OrdenesForms from "./pages/OrdenesForms";
+import Profile from "./pages/Profile";
 
 // Se importa el AuthProvider desde el contexto de autenticación.
 // Este proveedor dará acceso al estado y funciones de autenticación a toda la aplicación.
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./ProtectedRoute";
+
+
+
 
 
 function App() {
@@ -25,14 +33,17 @@ function App() {
       {/* El componente Routes se encarga de renderizar el primer <Route> que coincida con la URL actual. */}
       <Routes>
         {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
-        <Route path="/" element={<h1>Inicio</h1>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/ordenes" element={<h1>Ordenes</h1>} />
-        
-        <Route path="/add-orden" element={<h1>Agregar Orden</h1>} />
-        <Route path="/ordenes/:id" element={<h1>Editar Orden</h1>} />
-        <Route path="/profile" element={<h1>Perfil</h1>} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/ordenes" element={<Ordenes/>} />
+        <Route path="/add-orden" element={<OrdenesForms/>} />
+        <Route path="/ordenes/:id" element={<OrdenesForms/>} />
+        <Route path="/profile" element={<Profile/>} />
+        </Route>
+
       </Routes>
     </Router>
       </AuthProvider>
