@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import '../style/Login.css';
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login() {
     // Hook de efecto para cambiar el fondo de la página cuando el componente se monta.
@@ -24,16 +24,8 @@ function Login() {
   // Hook `useForm` de react-hook-form para manejar el estado y validación del formulario.
   const {register, handleSubmit, formState: { errors }} = useForm();
   // Se extraen las funciones y estados necesarios del contexto de autenticación.
-  const {signin, isAutenticated, errors: signinErrors, successMessage} = useAuth();
-  const navigate = useNavigate(); // Hook para la navegación programática.
-
-  // Hook de efecto que se ejecuta cuando `isAutenticated` cambia.
-  // Si el usuario se autentica, se le redirige a la página de órdenes.
-  useEffect(() => {
-    if (isAutenticated) {
-      navigate("/ordenes");
-    }
-  }, [isAutenticated, navigate]);
+  const {signin, errors: signinErrors, successMessage} = useAuth();
+ 
 
   // Función que se ejecuta al enviar el formulario.
   // `handleSubmit` de react-hook-form valida el formulario antes de llamar a `signin`.

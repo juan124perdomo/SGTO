@@ -1,7 +1,7 @@
 // Se importa el enrutador de Express para definir las rutas.
 import { Router} from "express";
 // Se importan los controladores que contienen la lógica para cada ruta.
-import {login, logout, register, profile  } from "../controllers/auth.controller.js";
+import {login, logout, register, profile, verifyToken  } from "../controllers/auth.controller.js";
 // Se importa el middleware `authRequired` para proteger rutas que necesitan autenticación.
 import { authRequired } from "../middleware/validateToken.js";
 // Se importa el middleware `validateSchema` para validar los datos de entrada.
@@ -29,6 +29,9 @@ router.post("/login",validateSchema(loginSchema),login);
 // Ruta para cerrar sesión.
 // POST /api/logout
 router.post("/logout", logout);
+
+
+router.get("/verify",verifyToken );
 
 // Ruta para obtener el perfil del usuario autenticado.
 // GET /api/profile

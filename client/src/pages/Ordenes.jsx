@@ -1,11 +1,11 @@
 import React from 'react'
 
-function ordenes() {
+function Ordenes() {
   return (
-    <div>
+    <>
       
-    </div>
+    </>
   )
 }
 
-export default ordenes
+export default Ordenes

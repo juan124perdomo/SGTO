@@ -1,7 +1,9 @@
 // Se importan los hooks de React necesarios.
 import { createContext, useState, useContext, useEffect } from "react";
 // Se importan las funciones que hacen las peticiones a la API del backend.
-import { registerRequest, loginRequest } from "../api/auth";
+import { registerRequest, loginRequest, verityTokenRequest} from "../api/auth";
+import Cookies from "js-cookie";
+
 
 // Se crea el contexto de autenticación. Este contexto permitirá compartir el estado
 // y las funciones de autenticación a través de toda la aplicación.
@@ -28,6 +30,8 @@ export const AuthProvider = ({ children }) => {
   const [errors, setError] = useState([]);
   // `successMessage`: Un string para almacenar el mensaje de éxito del backend.
   const [successMessage, setSuccessMessage] = useState("");
+  
+  const [loading, setLoading] = useState(true)
 
   // --- FUNCIONES DE AUTENTICACIÓN ---
 
@@ -100,11 +104,50 @@ export const AuthProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+//Token de login
+
+  useEffect(() => {
+   async function checkLogin (){
+  const cookies = Cookies.get();
+    
+    if (!cookies.token) {
+      
+      setIsAutenticated(false);
+      setLoading(false);
+      
+      return setUser(null);
+    } else {
+      try {
+        const res = await verityTokenRequest(cookies.token);
+        console.log(res);
+        
+        if (!res.data)  {
+          setIsAutenticated(false);
+        setLoading(false);
+        return;
+        } 
+
+
+        setUser(res.data);
+        setIsAutenticated(true);
+        setLoading(false);
+
+      } catch {
+      setUser(null);
+      setIsAutenticated(false);
+      setLoading(false);
+      }
+
+    }
+    }
+    checkLogin();
+  }, []);
   
   return (
     // Se provee el contexto con los valores (estados y funciones) a los componentes hijos.
     // Cualquier componente envuelto por AuthProvider podrá acceder a `signup`, `user`, `isAutenticated`, `successMessage`, etc.
-    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin, successMessage }}>
+    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin, successMessage, loading }}>
       {children}
     </AuthContext.Provider>
   );
