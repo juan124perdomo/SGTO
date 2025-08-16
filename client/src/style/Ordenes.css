@@ -1,0 +1,42 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container-orden{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 10px;
+    
+}
+
+.orden{
+    margin: auto;
+    
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    width: 500px;
+}
+
+.orden h2{
+        border-radius: 15px 15px 0 0;
+        font-size: 24px;
+        padding: 10px;
+        background: #000000;
+        color: #fff;
+    }
+
+.orden p{
+    color: #666;
+    font-size: 16px;
+    margin: 10px;
+    border-bottom: 1px solid #9c9b9b;
+    padding: 6px;
+;
+    
+}

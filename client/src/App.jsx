@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 // Este proveedor dará acceso al estado y funciones de autenticación a toda la aplicación.
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
+import { OrdenProvider } from "./context/Ordencontext";
 
 
 function App() {
@@ -31,9 +32,7 @@ function App() {
           como ProtectedRoute, puedan acceder al estado de autenticación.
         */}
         <AuthProvider>
-          {/* El componente Routes se encarga de renderizar el primer <Route> 
-            que coincida con la URL actual. 
-          */}
+          <OrdenProvider>
           <Routes>
             {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
             <Route path="/" element={<Homepage/>} />
@@ -47,12 +46,14 @@ function App() {
             */}
             <Route element={<ProtectedRoute/>}>
               <Route path="/ordenes" element={<Ordenes/>} />
-              <Route path="/add-orden" element={<OrdenForms/>} />
-              <Route path="/ordenes/:id" element={<OrdenForms/>} />
+              <Route path="/orden/new" element={<OrdenForms/>} />
+              <Route path="/orden/:id" element={<OrdenForms/>} />
               <Route path="/profile" element={<Profile/>} />
             </Route>
           </Routes>
-        </AuthProvider>
+          </OrdenProvider>
+          </AuthProvider>
+       
       </Router>
     </>
   );

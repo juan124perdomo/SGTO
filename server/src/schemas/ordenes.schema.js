@@ -14,7 +14,7 @@ export const createOrdenSchema = z.object({
   }),
   // La fecha debe ser un string con formato de fecha y hora (datetime).
   // `.optional()` hace que este campo no sea obligatorio.
-  date: z.string().datetime().optional(),
+  date: z.string().optional(),
   // El tipo es un string y es requerido.
   type: z.string({
     required_error: "El tipo es requerido",
