@@ -17,34 +17,43 @@ import Profile from "./pages/Profile";
 // Se importa el AuthProvider desde el contexto de autenticación.
 // Este proveedor dará acceso al estado y funciones de autenticación a toda la aplicación.
 import { AuthProvider } from "./context/AuthContext";
-import  ProtectedRoute  from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 
 function App() {
   return (
     <>
-    {/* AuthProvider envuelve toda la aplicación. Cualquier componente dentro de él
-        podrá acceder al contexto de autenticación usando el hook `useAuth`. */}
-    <AuthProvider>
-      {/* El componente Router es el encargado de gestionar el historial de navegación. */}
+      {/* El componente <Router> debe envolver toda la aplicación para que todos los componentes, 
+        incluyendo el AuthProvider y las rutas, puedan reaccionar a los cambios de URL.
+      */}
       <Router>
-      {/* El componente Routes se encarga de renderizar el primer <Route> que coincida con la URL actual. */}
-      <Routes>
-        {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
-        <Route path="/" element={<Homepage/>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* El AuthProvider envuelve las rutas para que los componentes que están dentro, 
+          como ProtectedRoute, puedan acceder al estado de autenticación.
+        */}
+        <AuthProvider>
+          {/* El componente Routes se encarga de renderizar el primer <Route> 
+            que coincida con la URL actual. 
+          */}
+          <Routes>
+            {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
+            <Route path="/" element={<Homepage/>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-
-        <Route element={<ProtectedRoute/>}>
-        <Route path="/ordenes" element={<Ordenes/>} />
-        <Route path="/add-orden" element={<OrdenForms/>} />
-        <Route path="/ordenes/:id" element={<OrdenForms/>} />
-        <Route path="/profile" element={<Profile/>} />
-        </Route>
-      </Routes>
-    </Router>
-      </AuthProvider>
+            {/*
+              Un <Route> que contiene otras rutas anidadas. Todas las rutas
+              dentro de este contenedor requieren la autenticación proporcionada
+              por ProtectedRoute.
+            */}
+            <Route element={<ProtectedRoute/>}>
+              <Route path="/ordenes" element={<Ordenes/>} />
+              <Route path="/add-orden" element={<OrdenForms/>} />
+              <Route path="/ordenes/:id" element={<OrdenForms/>} />
+              <Route path="/profile" element={<Profile/>} />
+            </Route>
+          </Routes>
+        </AuthProvider>
+      </Router>
     </>
   );
 }

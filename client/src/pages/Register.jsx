@@ -48,7 +48,7 @@ function Register() {
 
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form className="form-register" onSubmit={onSubmit}>
         {/* Se mapean y muestran los errores de registro que vienen del backend. */}
         {registerErrors.map((error, i)=>(
       <div className="errores" key={i}>
@@ -59,18 +59,18 @@ function Register() {
         {successMessage && (
           <div className="successes">{successMessage}</div>
         )}
-        <h1>Registrarse</h1>
+        <h1 className="register-title">Registrarse</h1>
         {/* Campos del formulario de registro. `register` los vincula con react-hook-form. */}
-        <input type="text" placeholder="Nombre" {...register("username", { required: true })} />
+        <input className="register-input"  type="text" placeholder="Nombre" {...register("username", { required: true })} />
         {errors.username && <span>Este campo es requerido</span>}
-        <input type="text" placeholder="Correo electronico" {...register("email", { required: true })} />
+        <input className="register-input" type="text" placeholder="Correo electronico" {...register("email", { required: true })} />
         {errors.email && <span>Este campo es requerido</span>}
-        <input type="password" placeholder="Contraseña" {...register("password", { required: true })} />
+        <input className="register-input" type="password" placeholder="Contraseña" {...register("password", { required: true })} />
         {errors.password && <span>Este campo es requerido</span>}
-        <input type="text" placeholder="Telefono" {...register("telefono", { required: true })} />
+        <input className="register-input" type="text" placeholder="Telefono" {...register("telefono", { required: true })} />
         {errors.telefono && <span>Este campo es requerido</span>}
 
-        <button type="submit">Registrarse</button>
+        <button className="register-submit" type="submit">Registrarse</button>
         {/* Enlace para ir a la página de login si el usuario ya tiene una cuenta. */}
         <Link className="link" to="/login">Ya tienes cuenta? Inicia sesion</Link>
       </form>

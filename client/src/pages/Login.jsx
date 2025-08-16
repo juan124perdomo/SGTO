@@ -36,7 +36,7 @@ function Login() {
 
   return (
     <div>
-     <form onSubmit={onSubmit}>
+     <form className="form-login" onSubmit={onSubmit}>
       {/* Muestra los errores de inicio de sesión que vienen del backend */}
       {signinErrors.map((error, i)=>(
       <div className="errores" key={i}>
@@ -49,15 +49,15 @@ function Login() {
         <div className="successes">{successMessage}</div>
       )}
         
-        <h1>Iniciar Sesión</h1>
+        <h1 className="login-title" >Iniciar Sesión</h1>
 
         {/* Campos del formulario */}
-        <input type="text" placeholder="Correo electronico" {...register("email", { required: true })} />
+        <input className="login-input"  type="text" placeholder="Correo electronico" {...register("email", { required: true })} />
         {errors.email && <span>Este campo es requerido</span>}
-        <input type="password" placeholder="Contraseña" {...register("password", { required: true })} />
+        <input  className="login-input" type="password" placeholder="Contraseña" {...register("password", { required: true })} />
         {errors.password && <span>Este campo es requerido</span>}
         
-        <button type="submit">Iniciar Sesión</button>
+        <button className="login-submit" type="submit">Iniciar Sesión</button>
         <Link className="link" to="/register">No tienes cuenta? Registrate</Link>
       </form>
     </div>

@@ -5,7 +5,7 @@
 }
 
 
-form{
+.form-register{
     display: flex;
     flex-flow: column nowrap;
     max-width: 400px;
@@ -16,13 +16,13 @@ form{
     border-radius: 8px;
    box-shadow: 0 5px 45px 5px #000; 
 }
-h1{
+.register-title{
     text-align: center;
     color: white;
     margin: 9px 0px;
 }
 
-input{
+.register-input{
     border: none;
     padding: 12px 15px;
     margin: 10px 0;
@@ -33,16 +33,16 @@ input{
     background:transparent;
     
 }
-input:focus{
+.register-input:focus{
     
     outline: none;
     border-bottom-color: #054ea7;
     
 }
-input::placeholder{
+.register-input::placeholder{
     color: #fff;
 }
-button{
+.register-submit{
     border: none;
     padding: 12px ;
     margin: 10px 0;
@@ -57,7 +57,7 @@ button{
    cursor: pointer;
 
 }
-button:hover{
+.register-submit:hover{
 
     box-shadow: inset 0 50px 0 0 #054ea7;
     color: rgb(255, 255, 255);
