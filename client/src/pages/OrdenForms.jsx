@@ -1,14 +1,43 @@
-import { useForm } from "react-hook-form";
+import {   useForm } from "react-hook-form";
 import "../style/OrdenForm.css";
 import { useOrdenes } from "../context/Ordencontext";
+import {useNavigate, useParams} from "react-router-dom";
+import { useEffect } from "react";
 
 function OrdenForms() {
-  const { register, handleSubmit } = useForm();
-  const { createOrden } = useOrdenes();
+  const { register, handleSubmit,setValue} = useForm();
+  const { createOrden, getOrden, updateOrden } = useOrdenes();
+  const navigate = useNavigate();
+  const Params = useParams();
+
+  useEffect(() => {
+     async function loadOrden() {
+      if (Params.id) {
+        const orden = await getOrden(Params.id);
+        console.log(orden);
+        setValue("title", orden.title);
+        setValue("descripcion", orden.descripcion);
+        setValue("date", orden.date);
+        setValue("type", orden.type);
+        setValue("priority", orden.priority);
+      }
+    }
+    
+      
+    loadOrden();
+
+    }, []);
 
   const onSubmit = handleSubmit((data) => {
-    createOrden(data);
-    console.log("Datos enviados:", data);
+    if (Params.id) {
+      updateOrden(Params.id, data);
+      console.log("Orden actualizada con éxito");
+    }
+    else{
+      createOrden(data);
+    
+    }
+    navigate("/ordenes");
   });
 
   return (

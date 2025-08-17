@@ -23,20 +23,57 @@
     width: 500px;
 }
 
-.orden h2{
-        border-radius: 15px 15px 0 0;
-        font-size: 24px;
-        padding: 10px;
-        background: #000000;
-        color: #fff;
+.orden-header{
+    display: flex;
+    flex-flow: row nowrap;
+    font-size: 14px;
+    margin: 0;
+    padding: 10px;
+    border-radius: 15px 15px 0 0;
+    background: #000;
     }
+.orden-header h2{
+    color: #ffffff;
+    font-size: 24px;    
+}
 
 .orden p{
     color: #666;
     font-size: 16px;
     margin: 10px;
     border-bottom: 1px solid #9c9b9b;
-    padding: 6px;
-;
-    
+    padding: 6px;    
+}
+
+.orden-header .btn-delete{
+    margin-left: auto;
+    background-color: #f60000;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;    
+}
+.orden-header .btn-delete:hover{
+    background-color: #e03636;
+}
+.orden-header .btn-edit{
+    margin-left: 10px;
+    background-color: #02cc08;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;    
+}
+.orden-header .btn-edit:hover{
+    background-color: #63c267;
 }

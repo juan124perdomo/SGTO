@@ -81,6 +81,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+      Cookies.remove("token");
+      setUser(null);
+      setIsAutenticated(false);
+      setSuccessMessage("Sesión cerrada exitosamente");
+      setError([]);
+  }
+
   // Este useEffect se encarga de limpiar los errores después de 5 segundos.
   useEffect(() => {
     if (errors.length > 0) {
@@ -147,7 +155,7 @@ export const AuthProvider = ({ children }) => {
   return (
     // Se provee el contexto con los valores (estados y funciones) a los componentes hijos.
     // Cualquier componente envuelto por AuthProvider podrá acceder a `signup`, `user`, `isAutenticated`, `successMessage`, etc.
-    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin, successMessage, loading }}>
+    <AuthContext.Provider value={{ signup, user, isAutenticated, errors, signin, successMessage, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,7 @@
 import {  useEffect } from "react";
 import {useOrdenes} from "../context/Ordencontext";
 import "../style/Ordenes.css";
+import OrdenCard from "../components/OrdenCard";
 
 function Ordenes() {
   const{ getOrdenes, ordenes } = useOrdenes();
@@ -19,16 +20,7 @@ function Ordenes() {
     <>
       {
         ordenes.map((orden) => (
-          <div className="container-orden" key={orden._id}>
-            <div className="orden">
-            
-            <h2>{orden.title}</h2>
-            <p>{orden.descripcion}</p>
-            <p>{orden.date}</p>
-            <p>{orden.type}</p>
-            <p>{orden.priority}</p>
-            </div>
-          </div>
+         <OrdenCard key={orden._id} orden={orden} />
         )) 
       }
     </>

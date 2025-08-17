@@ -19,6 +19,7 @@ import Profile from "./pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { OrdenProvider } from "./context/Ordencontext";
+import Navbar from "./components/Navbar";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         */}
         <AuthProvider>
           <OrdenProvider>
+            <Navbar />
           <Routes>
             {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
             <Route path="/" element={<Homepage/>} />
@@ -47,7 +49,7 @@ function App() {
             <Route element={<ProtectedRoute/>}>
               <Route path="/ordenes" element={<Ordenes/>} />
               <Route path="/orden/new" element={<OrdenForms/>} />
-              <Route path="/orden/:id" element={<OrdenForms/>} />
+              <Route path="/ordenes/:id" element={<OrdenForms/>} />
               <Route path="/profile" element={<Profile/>} />
             </Route>
           </Routes>

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import {createOrdenRequest, getOrdenesRequest} from "../api/ordenes";
+import {createOrdenRequest, getOrdenesRequest, deleteOrdenRequest, getOrdenRequest, updateOrdenRequest} from "../api/ordenes";
 
 const OrdenContext = createContext();
 
@@ -34,8 +34,38 @@ export function OrdenProvider({children}) {
         console.log(res);
     }
 
+    const deleteOrden = async (id) => { 
+        try {
+            const res = await deleteOrdenRequest(id);
+            if(res.status === 204) setOrdenes(ordenes.filter(orden => orden._id !== id));
+            console.log("Orden eliminada con éxito");
+        } catch (error) {
+            console.error("Error al eliminar la orden:", error);
+            
+        }
+        
+    }
+
+    const getOrden =async (id) => {
+        try {
+            const res = await getOrdenRequest(id);
+        return res.data;
+        } catch (error) {
+            console.error("Error al obtener la orden:", error);
+           
+        }
+    }
+
+    const updateOrden = async (id, orden) => {
+        try{
+            await updateOrdenRequest(id, orden);
+        }catch (error) {
+            console.error("Error al actualizar la orden:", error);
+        }
+    }
+
     return (
-        <OrdenContext.Provider value={{ordenes,createOrden, getOrdenes}}>
+        <OrdenContext.Provider value={{ordenes,createOrden, getOrdenes, deleteOrden, getOrden, updateOrden}}>
             {children}</OrdenContext.Provider>
     );
 }
