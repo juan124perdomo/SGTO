@@ -1,3 +1,4 @@
+ESTO ES UN LOGIN CON AUTENTICACION Y CRUD CON VALIDACION DE FORMULARIO Y TIPO DE DATOS
 
 -Para  ejecutar el  proyecto lo primero es tenerlo  abierto en visual studio code
 -Una vez abierto y tener  en  el visor de las carpetas las carpetas principales de client y server
