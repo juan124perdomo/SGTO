@@ -10,7 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Ordenes from "./pages/Ordenes";
 import OrdenForms from "./pages/OrdenForms";
-import Homepage from "./pages/Homepage";
+;
 import Profile from "./pages/Profile";
 
 
@@ -37,7 +37,7 @@ function App() {
             <Navbar />
           <Routes>
             {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
-            <Route path="/" element={<Homepage/>} />
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

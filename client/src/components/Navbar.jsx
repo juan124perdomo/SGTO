@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import './Navbar.css';
 import { useAuth } from "../context/AuthContext";
-import UsuarioImg from "../assets/Usuario.png";
+
 
 
 
