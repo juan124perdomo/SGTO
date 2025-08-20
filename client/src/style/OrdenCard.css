@@ -1,0 +1,80 @@
+*{
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.orden{
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px  20px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    margin: 80px auto;
+    max-width: 500px;
+    
+    
+}
+.orden .orden-header{
+    display: flex;
+    
+    align-items: center;
+    background: -webkit-linear-gradient(90deg, #00fbff,#640288);
+    background: linear-gradient(90deg, #00fbff,#640288);
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    color: white;                                        
+}
+
+.orden .orden-header h2{
+    margin: 0;
+    font-size: 2rem;
+    padding: 5px;
+    margin: 0 10px;
+}
+.orden .orden-header .botones{
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.orden .orden-header .botones .btn-delete{
+
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    background: #ff0000;
+    padding: 10px;
+    border-radius: 10px;
+    }
+
+    .orden .orden-header .botones .btn-edit{
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    background: #27c300;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    
+    }
+
+
+    .orden .orden-body{
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        color: black;
+    }
+
+    .orden .orden-body p{
+       
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: black;
+        
+    }
+    .orden .orden-body p span{
+        font-weight: bold;
+        color: #000000;
+        margin: 0 5px;
+    }

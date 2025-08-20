@@ -18,6 +18,7 @@ function Ordenes() {
   return (
     
     <>
+    
       {
         ordenes.map((orden) => (
          <OrdenCard key={orden._id} orden={orden} />

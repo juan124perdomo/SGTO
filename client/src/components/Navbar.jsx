@@ -19,7 +19,7 @@ function Navbar() {
           <li><Link to="/ordenes">Inicio</Link></li>
           <li><Link to="/orden/new">Nueva Orden</Link></li>
           
-          <li className="user" ><Link to="/profile"><img src={UsuarioImg} alt="Usuario" />{user.username}</Link></li>
+          <li className="user" ><Link to="/profile">{user.username}</Link></li>
 
           <li><Link to="/" onClick={() => {logout();}}  >Cerrar Sesión</Link></li>
 
