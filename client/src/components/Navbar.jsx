@@ -11,7 +11,7 @@ function Navbar() {
   return (
     <>
       <nav>
-        <Link to="/">SGTO</Link>
+        
         <ul>
       {isAutenticated ? (
          <>
@@ -26,6 +26,7 @@ function Navbar() {
           </>
       ):(
       <>
+      
       <li><Link to="/login">Iniciar seccion</Link></li>
 
       <li><Link to="/register">Registrarse</Link></li>
