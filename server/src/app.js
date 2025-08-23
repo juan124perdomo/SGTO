@@ -20,9 +20,21 @@ const app = express();
 // --- CONFIGURACIÓN DE MIDDLEWARES ---
 // Habilita CORS para permitir que el frontend (en http://localhost:5173) se comunique con este servidor.
 // Sin esto, el navegador bloquearía las peticiones por seguridad.
+const allowedOrigins = [
+  "http://localhost:5173", // Desarrollo local
+  "https://front-production-1543.up.railway.app" // Producción en Railway
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true // Permite que el frontend envíe cookies en sus peticiones. Es crucial para la autenticación.
+  origin: function (origin, callback) {
+    // Permite solicitudes sin "origin" (por ejemplo, desde Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS no permitido desde: " + origin));
+    }
+  },
+  credentials: true,
 }));
 
 // Usa Morgan en modo 'dev' para mostrar logs de peticiones concisos y coloreados en la consola.
