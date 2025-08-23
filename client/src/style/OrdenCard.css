@@ -78,3 +78,29 @@
         color: #000000;
         margin: 0 5px;
     }
+
+    @media (max-width: 768px) {
+  .orden {
+    margin: 30px auto;
+    width: 95%;
+  }
+
+  .orden .orden-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .orden .orden-header .botones {
+    flex-direction: column; /* botones uno debajo del otro si no caben */
+    gap: 5px;
+  }
+
+  .orden .orden-header .botones .btn-delete,
+  .orden .orden-header .botones .btn-edit {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .orden .orden-body p {
+    font-size: 1rem;
+  }
+}

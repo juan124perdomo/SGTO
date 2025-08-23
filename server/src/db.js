@@ -12,8 +12,8 @@ export const connectDB = async () => {
         // La URL 'mongodb://localhost/SGOT' especifica que:
         // - El protocolo es `mongodb`.
         // - El servidor está en `localhost` (la máquina local).
-        // - La base de datos a la que se conectará es `SGOT`. Si no existe, MongoDB la creará en el primer guardado.
-        await mongoose.connect('mongodb://localhost/SGOT');
+        // CÓDIGO ACTUALIZADO CON LA CONEXIÓN DE ATLAS
+        await mongoose.connect('mongodb+srv://juanfelipeperdomo41:L51VDoi116JTmstL@sgot.apmhiao.mongodb.net/?retryWrites=true&w=majority&appName=SGOT');
         // Si la conexión es exitosa, imprime un mensaje en la consola para confirmarlo.
         console.log(">>> Base de datos conectada");
     } catch (error) {
