@@ -5,3 +5,7 @@
 // ADVERTENCIA: En un entorno de producción, esta clave nunca debe estar hardcodeada en el código.
 // Debería ser una cadena larga, compleja y aleatoria, y cargarse desde variables de entorno.
 export const TOKEN_SECRET = "some secret key";
+
+
+export const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/SGTO";
+export const PORT = process.env.PORT || 3000;
