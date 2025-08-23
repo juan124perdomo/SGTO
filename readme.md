@@ -1,4 +1,7 @@
+#MERN disploy 
+
 ESTO ES UN LOGIN CON AUTENTICACION Y CRUD CON VALIDACION DE FORMULARIO Y TIPO DE DATOS
+USANDO EL STACK MERN (MONGODB, EXPRESS, REACT, NODEJS);
 
 -Para  ejecutar el  proyecto lo primero es tenerlo  abierto en visual studio code
 -Una vez abierto y tener  en  el visor de las carpetas las carpetas principales de client y server
