@@ -1,7 +1,7 @@
 // Se importa el enrutador de Express para definir las rutas.
 import { Router} from "express";
 // Se importan los controladores que contienen la lógica para cada ruta.
-import {login, logout, register, profile, verifyToken, updateUserRole  } from "../controllers/auth.controller.js";
+import {login, logout, register, profile, verifyToken, updateUserRole, getTecnicos } from "../controllers/auth.controller.js";
 import { roleRequired } from "../middleware/roleRequired.js";
 // Se importa el middleware `authRequired` para proteger rutas que necesitan autenticación.
 import { authRequired } from "../middleware/validateToken.js";
@@ -49,5 +49,9 @@ router.get("/profile", authRequired, profile);
 // Ruta para que un administrador actualice el rol de otro usuario.
 // PUT /api/users/:id/role
 router.put("/users/:id/role", authRequired, roleRequired([ROLES.ADMIN]), updateUserRole);
+
+// Ruta para que un administrador obtenga la lista de todos los técnicos.
+// GET /api/users/tecnicos
+router.get("/users/tecnicos", authRequired, roleRequired([ROLES.ADMIN]), getTecnicos);
 
 export default router;

@@ -9,6 +9,7 @@ import {
   findUserByEmail,
   findUserByEmailWithPassword,
   updateUserRoleById,
+  findUsersByRole,
 } from "../models/user.model.js";
 
 import createAccesToken from "../libs/jwt.js";
@@ -171,5 +172,19 @@ export const updateUserRole = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: "Error al actualizar el rol del usuario.", error: error.message });
+  }
+};
+
+/**
+ * @description [ADMIN] Obtiene una lista de todos los usuarios con rol de Técnico.
+ */
+export const getTecnicos = async (req, res) => {
+  try {
+    const ROLES = { TECNICO: 3 };
+    // Llama a la función del modelo para encontrar usuarios por rol
+    const tecnicos = await findUsersByRole(ROLES.TECNICO);
+    res.json(tecnicos);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener la lista de técnicos.", error: error.message });
   }
 };

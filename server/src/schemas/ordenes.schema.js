@@ -25,4 +25,6 @@ export const createOrdenSchema = z.object({
     required_error: "La prioridad es requerida",
     invalid_type_error: "La prioridad debe ser un string",
   }),
+  // El estado es opcional al crear, ya que tiene un valor por defecto.
+  status: z.enum(["PENDIENTE", "EN_PROCESO", "FINALIZADA"]).optional(),
 });

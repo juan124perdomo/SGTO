@@ -6,7 +6,7 @@ import morgan from "morgan";
 // Importa cookie-parser, un middleware para analizar las cookies de las peticiones y popular `req.cookies`.
 import cookieParser from "cookie-parser";
 // Importa las rutas de autenticación (login, register, etc.) desde el archivo auth.routes.js.
-import  authRoutes from "./routes/auth.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 // Importa las rutas relacionadas con las órdenes desde el archivo ordenes.routes.js.
 import ordenesRoutes from './routes/ordenes.routes.js';
 // Importa cors, un middleware para habilitar el Cross-Origin Resource Sharing (CORS).
@@ -48,7 +48,7 @@ app.use(cookieParser());
 // --- MONTAJE DE RUTAS ---
 // Monta las rutas de autenticación bajo el prefijo '/api'.
 // Todas las rutas definidas en authRoutes (ej. /register) serán accesibles como /api/register.
-app.use('/api',authRoutes);
+app.use('/api', authRoutes);
 // Monta las rutas de órdenes bajo el mismo prefijo '/api'.
 // Todas las rutas en ordenesRoutes (ej. /ordenes) serán accesibles como /api/ordenes.
 app.use('/api', ordenesRoutes);

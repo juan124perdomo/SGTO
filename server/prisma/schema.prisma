@@ -53,6 +53,7 @@ model Orden {
   date        DateTime @default(now())
   type        String
   priority    String
+  status      Status   @default(PENDIENTE) // Nuevo campo de estado
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -66,6 +67,13 @@ model Orden {
   reporte Reporte?
 
   @@map("ordenes")
+}
+
+// Enum para los estados de la orden
+enum Status {
+  PENDIENTE
+  EN_PROCESO
+  FINALIZADA
 }
 
 model Reporte {

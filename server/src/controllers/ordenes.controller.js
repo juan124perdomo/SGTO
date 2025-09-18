@@ -150,8 +150,11 @@ export const assignOrdenController = async (req, res) => {
 
     // Aquí podrías añadir una validación para asegurar que el tecnicoId corresponde a un usuario con rol de técnico.
 
-    const updatedOrden = await Orden.assignOrdenToTecnico(ordenId, tecnicoId);
-    res.json({ message: "Orden asignada correctamente.", orden: updatedOrden });
+    const updatedOrden = await Orden.updateOrden(ordenId, {
+      tecnicoAsignadoId: Number(tecnicoId),
+      status: 'EN_PROCESO', // Cambiamos el estado a EN_PROCESO
+    });
+    res.json({ message: "Orden asignada y en proceso.", orden: updatedOrden });
   } catch (error) {
     res.status(500).json({ message: "Error al asignar la orden.", error: error.message });
   }
@@ -170,10 +173,16 @@ export const createReporteController = async (req, res) => {
       return res.status(400).json({ message: "La descripción del reporte es requerida." });
     }
 
+    // 1. Creamos el reporte
     const newReporte = await Orden.createReporte({
       ordenId,
       tecnicoId,
       descripcion,
+    });
+
+    // 2. Actualizamos el estado de la orden a FINALIZADA
+    await Orden.updateOrden(ordenId, {
+      status: 'FINALIZADA',
     });
 
     res.status(201).json(newReporte);

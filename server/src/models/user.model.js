@@ -24,9 +24,24 @@ export const updateUserRoleById = (id, roleId) => {
   });
 };
 
+export const findUsersByRole = async (roleId) => {
+  return prisma.user.findMany({
+    where: {
+      roleId: Number(roleId),
+    },
+    // Seleccionamos solo los campos que el frontend necesita para evitar enviar la contraseña
+    select: {
+      id: true,
+      username: true,
+      email: true,
+    },
+  });
+};
+
 export default {
   createUser,
   findUserByEmail,
   findUserByEmailWithPassword,
   updateUserRoleById,
+  findUsersByRole,
 };
