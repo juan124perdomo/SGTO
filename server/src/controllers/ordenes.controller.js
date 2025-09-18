@@ -1,92 +1,187 @@
-// Se importa el modelo de Orden para poder interactuar con la colección de 'ordenes' en la base de datos.
 import Orden from "../models/orden.model.js";
 
 /**
  * @description Obtiene todas las órdenes asociadas al usuario autenticado.
- * @param {object} req - El objeto de solicitud de Express. `req.user.id` es añadido por el middleware `authRequired`.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const getOrdenes = async (req, res) => {
-    // Busca en la base de datos todas las órdenes donde el campo 'user' coincida con el ID del usuario logueado.
-    const ordenes = await Orden.find({ user: req.user.id });
-    // Devuelve las órdenes encontradas en formato JSON.
+  try {
+    const ordenes = await Orden.getOrdenesByUser(req.user.id);
     res.json(ordenes);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las órdenes", error: error.message });
+  }
 };
 
 /**
  * @description Crea una nueva orden.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const createOrden = async (req, res) => {
-    // Extrae los datos para la nueva orden del cuerpo de la solicitud (req.body).
+  try {
     const { title, descripcion, date, type, priority } = req.body;
 
-    // Crea una nueva instancia del modelo 'Orden' con los datos recibidos.
-    // Asocia la orden con el usuario actual usando `req.user.id`.
-    const newOrden = new Orden({
-    user: req.user.id,
-    title,
-    descripcion,
-    date,
-    type,
-    priority,
+    const newOrden = await Orden.createOrden({
+      userId: Number(req.user.id),
+      title,
+      descripcion,
+      date,
+      type,
+      priority,
     });
 
-    // Guarda la nueva orden en la base de datos.
-    const ordenSaved = await newOrden.save();
-    // Después de guardar, busca la orden recién creada por su ID y usa `.populate("user")`
-    // para reemplazar el ID del usuario con el documento completo del usuario.
-    const ordenPopulada = await Orden.findById(ordenSaved._id).populate("user");
-    // Devuelve la orden guardada y populada como respuesta.
-    res.json(ordenPopulada);
+    res.status(201).json(newOrden);
+  } catch (error) {
+    res.status(500).json({ message: "Error al crear la orden", error: error.message });
+  }
 };
 
 /**
  * @description Obtiene una única orden por su ID.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const getOrden = async (req, res) => {
-    // Busca una orden por el ID proporcionado en los parámetros de la URL (req.params.id).
-    // `.populate("user")` trae la información completa del usuario asociado.
-    const orden = await Orden.findById(req.params.id).populate("user");
-    // Si no se encuentra la orden, devuelve un error 404 (Not Found).
-    if (!orden) return res.status(404).json({ message: "orden no encontrada" });
-    // Si se encuentra, la devuelve en formato JSON.
+  try {
+    const ordenId = Number(req.params.id);
+    const userId = Number(req.user.id);
+    const userRoleId = Number(req.user.roleId);
+
+    let orden;
+
+    // Si el usuario es Administrador (roleId = 2) o Técnico (roleId = 3), puede ver cualquier orden.
+    if (userRoleId === 2 || userRoleId === 3) {
+      orden = await Orden.getOrdenById(ordenId);
+    } else {
+      // Si no, solo puede ver sus propias órdenes.
+      orden = await Orden.getOrdenByIdAndUser(ordenId, userId);
+    }
+    
+    if (!orden) return res.status(404).json({ message: "Orden no encontrada" });
+
     res.json(orden);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener la orden", error: error.message });
+  }
 };
 
 /**
  * @description Elimina una orden por su ID.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
-export const deleteOrden = async(req, res)=>{
-    // Busca y elimina una orden por su ID.
-    const orden = await Orden.findByIdAndDelete(req.params.id);
-    // Si no se encuentra la orden para eliminar, devuelve un error 404.
-    if(!orden) return res.status(404).json({message: "orden no encontrada"});
-    // Si la eliminación es exitosa, devuelve un estado 204 (No Content),
-    // que indica que la operación se completó pero no hay nada que devolver en el cuerpo de la respuesta.
-    return res.sendStatus(204);
+export const deleteOrden = async (req, res) => {
+  try {
+    const ordenId = Number(req.params.id);
+    const userId = Number(req.user.id);
+    const userRoleId = Number(req.user.roleId);
 
-} 
+    // Si el usuario NO es Administrador (roleId != 2), verificamos que sea el dueño.
+    if (userRoleId !== 2) {
+      // Verificamos que la orden existe Y PERTENECE AL USUARIO antes de borrar
+      const orden = await Orden.getOrdenByIdAndUser(ordenId, userId);
+      if (!orden) {
+        return res.status(404).json({ message: "Orden no encontrada o no tienes permiso para eliminarla" });
+      }
+    } else {
+      // Si es Administrador, solo verificamos que la orden exista.
+      const orden = await Orden.getOrdenById(ordenId);
+      if (!orden) return res.status(404).json({ message: "Orden no encontrada" });
+    }
+
+    await Orden.deleteOrden(ordenId);
+    return res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar la orden", error: error.message });
+  }
+};
 
 /**
  * @description Actualiza una orden existente por su ID.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const updateOrden = async (req, res) => {
-    // Busca una orden por su ID y la actualiza con los datos del cuerpo de la solicitud (req.body).
-    // La opción `{ new: true }` asegura que el método devuelva el documento modificado, no el original.
-    const orden = await Orden.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+  try {
+    const ordenId = Number(req.params.id);
+    const userId = Number(req.user.id);
+
+    // Verificamos que la orden existe y pertenece al usuario antes de actualizar
+    const orden = await Orden.getOrdenByIdAndUser(ordenId, userId);
+    if (!orden) return res.status(404).json({ message: "Orden no encontrada o no tienes permiso para actualizarla" });
+
+    const ordenActualizada = await Orden.updateOrden(ordenId, req.body);
+
+    res.json(ordenActualizada);
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar la orden", error: error.message });
+  }
+};
+
+/**
+ * @description [ADMIN] Obtiene TODAS las órdenes del sistema.
+ */
+export const getAllOrdenesController = async (req, res) => {
+  try {
+    const ordenes = await Orden.getAllOrdenes();
+    res.json(ordenes);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener todas las órdenes", error: error.message });
+  }
+};
+
+/**
+ * @description [TECNICO] Obtiene las órdenes asignadas al técnico.
+ * (Esta es una función de ejemplo, la lógica real dependería de tu modelo de datos)
+ */
+export const getOrdenesAsignadas = async (req, res) => {
+  try {
+    const tecnicoId = Number(req.user.id);
+    const ordenes = await Orden.getOrdenesByTecnico(tecnicoId);
+    res.json(ordenes);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las órdenes asignadas.", error: error.message });
+  }
+};
+
+/**
+ * @description [ADMIN] Asigna una orden a un técnico.
+ */
+export const assignOrdenController = async (req, res) => {
+  try {
+    const ordenId = Number(req.params.id);
+    const { tecnicoId } = req.body;
+
+    if (!tecnicoId) {
+      return res.status(400).json({ message: "El ID del técnico es requerido." });
+    }
+
+    // Aquí podrías añadir una validación para asegurar que el tecnicoId corresponde a un usuario con rol de técnico.
+
+    const updatedOrden = await Orden.assignOrdenToTecnico(ordenId, tecnicoId);
+    res.json({ message: "Orden asignada correctamente.", orden: updatedOrden });
+  } catch (error) {
+    res.status(500).json({ message: "Error al asignar la orden.", error: error.message });
+  }
+};
+
+/**
+ * @description [TECNICO/ADMIN] Crea un reporte para una orden específica.
+ */
+export const createReporteController = async (req, res) => {
+  try {
+    const ordenId = Number(req.params.id);
+    const tecnicoId = Number(req.user.id);
+    const { descripcion } = req.body;
+
+    if (!descripcion) {
+      return res.status(400).json({ message: "La descripción del reporte es requerida." });
+    }
+
+    const newReporte = await Orden.createReporte({
+      ordenId,
+      tecnicoId,
+      descripcion,
     });
 
-    // Si no se encuentra la orden para actualizar, devuelve un error 404.
-    if (!orden) return res.status(404).json({ message: "orden no encontrada" });
-    // Devuelve la orden actualizada en formato JSON.
-    res.json(orden);
+    res.status(201).json(newReporte);
+  } catch (error) {
+    // Manejo de error si el reporte ya existe para esa orden (por la restricción 'unique')
+    if (error.code === 'P2002') {
+      return res.status(409).json({ message: "Ya existe un reporte para esta orden." });
+    }
+    res.status(500).json({ message: "Error al crear el reporte.", error: error.message });
+  }
 };

@@ -1,177 +1,175 @@
 // Se importan los módulos necesarios.
-import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-// `createAccesToken` es una función personalizada para crear JSON Web Tokens (JWT).
-import createAccesToken from "../libs/jwt.js" ;
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 
+// importamos funciones del modelo Prisma (helpers)
+import {
+  createUser,
+  findUserByEmail,
+  findUserByEmailWithPassword,
+  updateUserRoleById,
+} from "../models/user.model.js";
+
+import createAccesToken from "../libs/jwt.js";
 
 /**
  * @description Registra un nuevo usuario en el sistema.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
-export const register =  async (req, res) => {
-  // Extrae los datos del cuerpo de la solicitud.
-  const {email,password,username,telefono} = req.body
-  
+export const register = async (req, res) => {
+  const { email, password, username, telefono } = req.body;
+
   try {
-    // 1. VERIFICACIÓN DE USUARIO: Busca si ya existe un usuario con el mismo correo electrónico.
-    const userFound = await User.findOne({email});
-    // Si se encuentra, devuelve un error 400 (Bad Request) indicando que el correo ya está en uso.
-    if(userFound) return res.status(400).json(["El correo ya está en uso"])
+    // 1. Verificar si ya existe el usuario
+    const userFound = await findUserByEmail(email);
+    if (userFound)
+      return res.status(400).json(["El correo ya está en uso"]);
 
-    // 2. HASH DE CONTRASEÑA: Encripta la contraseña antes de guardarla en la base de datos por seguridad.
-    // El '10' es el "salt round", que determina la complejidad del hash.
-    const passwordhashs = await bcrypt.hash(password,10)
+    // 2. Hash de la contraseña
+    const passwordhashs = await bcrypt.hash(password, 10);
 
-    // 3. CREACIÓN DE USUARIO: Crea una nueva instancia del modelo `User` con los datos del formulario.
-    const newUser =new User({
-    username,
-    email,
-    password:passwordhashs,
-    telefono,
-  });
+    // 3. Crear usuario en PostgreSQL
+    const newUser = await createUser({
+      username,
+      email,
+      password: passwordhashs,
+      telefono,
+    });
 
-    // 4. GUARDADO EN BD: Guarda el nuevo usuario en la base de datos MongoDB.
-    const userSaved = await newUser.save();
-    // 5. CREACIÓN DE TOKEN: Crea un token de acceso (JWT) para el usuario recién registrado.
-    // El token contiene el ID del usuario, que servirá para identificarlo en futuras solicitudes.
-    const token = await createAccesToken({id:userSaved._id}); 
-    // 6. ENVÍO DE COOKIE: Establece el token en una cookie del navegador. Al ser HTTP-Only,
-    // no puede ser accedida por JavaScript en el cliente, lo que aumenta la seguridad.
-    res.cookie("token",token)
-    // 7. RESPUESTA AL CLIENTE: Responde con los datos del usuario (sin la contraseña) para que el frontend
-    // pueda actualizar su estado y mostrar la información del usuario.
-    // ESTE ES EL OBJETO QUE SE DEVUELVE AL REGISTRARSE
-   res.json({
-    message: "Usuario registrado y autenticado satisfactoriamente",
-    id: userSaved._id,
-    username: userSaved.username,
-    email: userSaved.email,
-    telefono: userSaved.telefono,
-  });
+    // 4. Crear token
+    const token = await createAccesToken({ id: newUser.id, roleId: newUser.roleId });
+
+    // 5. Enviar cookie + respuesta
+    res.cookie("token", token);
+    res.json({
+      message: "Usuario registrado y autenticado satisfactoriamente",
+      id: newUser.id,
+      username: newUser.username,
+      email: newUser.email,
+      telefono: newUser.telefono,
+      roleId: newUser.roleId,
+    });
   } catch (error) {
-    // MANEJO DE ERRORES: Si ocurre un error en cualquier punto del `try`, se captura aquí
-    // y se envía una respuesta de error 500 (Internal Server Error) al cliente.
     res.status(500).json({ message: error.message });
   }
 };
 
 /**
  * @description Inicia sesión para un usuario existente.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const login = async (req, res) => {
-  // Extrae las credenciales del cuerpo de la solicitud.
   const { email, password } = req.body;
 
   try {
-    // 1. BÚSQUEDA DE USUARIO: Busca al usuario por su correo electrónico en la base de datos.
-    // `.select('+password')` es crucial porque el esquema del usuario (user.model.js)
-    // tiene `select: false` para la contraseña, por lo que no se devuelve por defecto.
-    // Esto es una medida de seguridad para no exponer la contraseña hasheada accidentalmente.
-    const userFound = await User.findOne({ email }).select("+password"); // aseguramos que incluya el password
-    // Si no se encuentra ningún usuario con ese correo, se devuelve un error 400.
+    // 1. Buscar usuario (incluye password)
+    const userFound = await findUserByEmailWithPassword(email);
     if (!userFound) {
       return res.status(400).json({ message: "Usuario no encontrado" });
     }
 
-    // 2. VERIFICACIÓN DE CONTRASEÑA: Comprueba si el usuario encontrado tiene una contraseña. Es una medida de seguridad adicional.
     if (!userFound.password) {
-      return res.status(500).json({ message: "El usuario no tiene contraseña guardada" });
+      return res
+        .status(500)
+        .json({ message: "El usuario no tiene contraseña guardada" });
     }
 
-    // 3. COMPARACIÓN DE CONTRASEÑAS: Compara la contraseña proporcionada en la solicitud con la contraseña hasheada
-    // que está almacenada en la base de datos. `bcrypt.compare` se encarga de esta comparación segura.
+    // 2. Comparar contraseñas
     const isMatch = await bcrypt.compare(password, userFound.password);
-    // Si las contraseñas no coinciden, se devuelve un error 400.
     if (!isMatch) {
       return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
-    // 4. CREACIÓN Y ENVÍO DE TOKEN: Si las credenciales son correctas, crea un token de acceso y lo envía como cookie.
-    const token = await createAccesToken({ id: userFound._id });
-    res.cookie("token", token,
-    );
-    // 5. RESPUESTA AL CLIENTE: Se responde con los datos públicos del usuario.
-    // ESTE ES EL OBJETO QUE SE DEVUELVE AL INICIAR SESIÓN
+    // 3. Crear token
+    const token = await createAccesToken({ id: userFound.id, roleId: userFound.roleId });
+
+    // 4. Respuesta
+    res.cookie("token", token);
     res.json({
       message: "Autenticación satisfactoria",
-      id: userFound._id,
+      id: userFound.id,
       username: userFound.username,
       email: userFound.email,
       telefono: userFound.telefono,
+      roleId: userFound.roleId,
     });
   } catch (error) {
-    // MANEJO DE ERRORES: Captura y responde a cualquier error del servidor.
     res.status(500).json({ message: error.message });
   }
 };
 
 /**
  * @description Cierra la sesión del usuario eliminando la cookie del token.
- * @param {object} req - El objeto de solicitud de Express.
- * @param {object} res - El objeto de respuesta de Express.
  */
 export const logout = (req, res) => {
-  // Para cerrar la sesión, se sobrescribe la cookie 'token' con un valor vacío
-  // y se establece una fecha de expiración en el pasado (new Date(0)).
-  // Esto le indica al navegador que elimine la cookie inmediatamente.
-  res.cookie("token","",{
-    expires: new Date(0)
-  });
-  // Se envía una respuesta con estado 200 (OK) para indicar que el cierre de sesión fue exitoso.
+  res.cookie("token", "", { expires: new Date(0) });
   return res.sendStatus(200);
-}
+};
 
 /**
  * @description Obtiene el perfil del usuario autenticado actualmente.
- * @param {object} req - El objeto de solicitud de Express. El middleware `authRequired` ya ha verificado el token y añadido `req.user`.
- * @param {object} res - El objeto de respuesta de Express.
  */
-export const profile = async(req, res) => {
-  // El middleware `authRequired` (en validateToken.js) ya ha verificado el JWT
-  // y ha extraído el payload (que contiene el ID del usuario) en `req.user`.
-  // Aquí, usamos ese ID para buscar al usuario completo en la base de datos.
-  const userFound = await User.findById(req.user.id)
-  
-  // Si por alguna razón el usuario no se encuentra (por ejemplo, fue eliminado después de
-  // que se emitió el token), se devuelve un error 400.
-  if (!userFound) return  res.status(400).json({ message: "usuario no encontrado" });
-  
-  // Se devuelve un objeto JSON con la información pública del perfil del usuario.
-  return res.json({
-    id: userFound._id,
-    username: userFound.username,
-    email: userFound.email,
-    telefono: userFound.telefono,
-    createdAt: userFound.createdAt,
-    updatedAt: userFound.updatedAt,
-  });
-  
-  
+export const profile = async (req, res) => {
+  try {
+    // req.user viene del middleware authRequired y ya tiene id y roleId.
+    // Buscamos el resto de la info del usuario.
+    const userFound = await findUserByEmail(req.user.email);
+
+    if (!userFound)
+      return res.status(400).json({ message: "usuario no encontrado" });
+
+    return res.json({ // Devolvemos el perfil completo, incluyendo el roleId.
+      id: userFound.id,
+      username: userFound.username,
+      email: userFound.email,
+      telefono: userFound.telefono,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-export const verifyToken = async(req, res) => {
-  const {token} = req.cookies;
-  if(!token) return res.status(401).json({ message: "No autorizado" });
+/**
+ * @description Verifica si un token es válido.
+ */
+export const verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+  if (!token) return res.status(401).json({ message: "No autorizado" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
     if (err) return res.status(403).json({ message: "No autorizado" });
 
-    const userFound = await User.findById(user.id);
-    if(!userFound) return res.status(400).json({ message: "usuario no encontrado" });
+    const userFound = await findUserByEmail(user.email);
+    if (!userFound)
+      return res.status(400).json({ message: "usuario no encontrado" });
 
     return res.json({
-      id: userFound._id,
+      id: userFound.id,
       username: userFound.username,
       email: userFound.email,
-
+    });
   });
-  });
+};
 
+/**
+ * @description [ADMIN] Actualiza el rol de un usuario específico.
+ */
+export const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params; // ID del usuario a modificar
+    const { roleId } = req.body; // Nuevo roleId
 
-}
+    // Validación simple
+    if (!roleId || ![1, 2, 3].includes(Number(roleId))) {
+      return res.status(400).json({ message: "El roleId proporcionado no es válido." });
+    }
+
+    const updatedUser = await updateUserRoleById(id, roleId);
+
+    res.json({ message: "Rol de usuario actualizado correctamente.", user: updatedUser });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el rol del usuario.", error: error.message });
+  }
+};

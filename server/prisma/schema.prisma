@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+
+  @@map("roles")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  telefono  String?  // Opcional
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relación con roles
+  roleId Int  @default(1) // Asigna un rol por defecto, asumiendo que el rol con id=1 existe
+  role   Role @relation(fields: [roleId], references: [id])
+
+  ordenes Orden[]
+
+  // Relación para órdenes asignadas a un técnico
+  ordenesAsignadas Orden[] @relation("TecnicoAsignado")
+  
+  // Relación con Reportes: Un usuario (técnico) puede tener muchos reportes.
+  reportes Reporte[]
+
+  @@map("users")
+}
+
+model Orden {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  title       String
+  descripcion String
+  date        DateTime @default(now())
+  type        String
+  priority    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relación para el técnico asignado (opcional)
+  tecnicoAsignadoId Int?  @map("tecnico_asignado_id")
+  tecnicoAsignado   User? @relation("TecnicoAsignado", fields: [tecnicoAsignadoId], references: [id])
+
+  // Relación con Reportes: Una orden puede tener un reporte.
+  reporte Reporte?
+
+  @@map("ordenes")
+}
+
+model Reporte {
+  id          Int      @id @default(autoincrement())
+  ordenId     Int      @unique @map("orden_id") // Un reporte pertenece a una única orden
+  tecnicoId   Int      @map("tecnico_id") // El ID del técnico que crea el reporte
+  descripcion String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  orden   Orden @relation(fields: [ordenId], references: [id], onDelete: Cascade)
+  tecnico User  @relation(fields: [tecnicoId], references: [id])
+
+  @@map("reportes")
+}

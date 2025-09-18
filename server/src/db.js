@@ -1,13 +1,15 @@
-console.log(process.env.MONGODB_URI);
-import mongoose from "mongoose";
-import { MONGODB_URI } from "./config.js";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("Conectado a la base de datos");
+    await prisma.$connect();
+    console.log("✅ Conectado a PostgreSQL con Prisma");
   } catch (error) {
-    console.error("Error al conectar a la base de datos:", error);
+    console.error("❌ Error al conectar a la BD:", error);
+    process.exit(1);
   }
 };
 
+export default prisma;
