@@ -2,6 +2,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
+import prisma from "../db.js"; // Importamos la instancia de Prisma
 
 // importamos funciones del modelo Prisma (helpers)
 import {
@@ -202,10 +203,21 @@ export const getTecnicos = async (req, res) => {
  */
 export const getAllUsersController = async (req, res) => {
   try {
-    const users = await findAllUsers();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await findAllUsers({
+      skip,
+      take: limit,
+    });
+
+    const totalUsers = await prisma.user.count();
+
     // Omitimos la contraseña de la respuesta
     const usersWithoutPassword = users.map(({ password, ...user }) => user);
-    res.json(usersWithoutPassword);
+
+    res.json({ users: usersWithoutPassword, totalPages: Math.ceil(totalUsers / limit) });
   } catch (error) {
     res.status(500).json({ message: "Error al obtener la lista de usuarios.", error: error.message });
   }

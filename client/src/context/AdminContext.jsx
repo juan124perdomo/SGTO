@@ -15,6 +15,7 @@ export function AdminProvider({ children }) {
   const [allOrdenes, setAllOrdenes] = useState([]);
   const [tecnicos, setTecnicos] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -56,11 +57,12 @@ export function AdminProvider({ children }) {
     }
   };
 
-  const getAllUsers = async () => {
+  const getAllUsers = async (page) => {
     try {
       setLoading(true);
-      const res = await getAllUsersRequest();
-      setAllUsers(res.data);
+      const res = await getAllUsersRequest(page);
+      setAllUsers(res.data.users);
+      setTotalPages(res.data.totalPages);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
     } finally {
@@ -85,7 +87,7 @@ export function AdminProvider({ children }) {
   const getRoleName = (roleId) => ({ 1: 'user', 2: 'admin', 3: 'tecnico' }[roleId] || 'desconocido');
 
   return (
-    <AdminContext.Provider value={{ getAllOrdenes, allOrdenes, getTecnicos, tecnicos, loading, error, assignOrden, allUsers, getAllUsers, updateUserRole }}>
+    <AdminContext.Provider value={{ getAllOrdenes, allOrdenes, getTecnicos, tecnicos, loading, error, assignOrden, allUsers, getAllUsers, updateUserRole, totalPages }}>
       {children}
     </AdminContext.Provider>
   );

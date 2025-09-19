@@ -48,8 +48,9 @@ export const findUsersByRole = async (roleId) => {
   });
 };
 
-export const findAllUsers = () => {
+export const findAllUsers = (options = {}) => {
   return prisma.user.findMany({
+    ...options,
     include: {
       role: true, // Incluimos la información del rol
     },

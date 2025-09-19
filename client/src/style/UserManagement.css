@@ -86,3 +86,29 @@
     background-color: #95a5a6;
     cursor: not-allowed;
 }
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.pagination-controls span {
+    color: #2c3e50; /* Un color negro/gris oscuro para el texto */
+    font-weight: 500;
+}
+
+.pagination-controls button {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid #bdc3c7;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+    background-color: #ecf0f1;
+    cursor: not-allowed;
+    color: #bdc3c7;
+}

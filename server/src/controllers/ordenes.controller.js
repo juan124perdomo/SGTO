@@ -40,6 +40,9 @@ export const createOrden = async (req, res) => {
       priority,
     });
 
+    // Emitimos un evento para notificar a todos los clientes
+    req.io.emit('ordenes_actualizadas');
+
     res.status(201).json(newOrden);
   } catch (error) {
     res.status(500).json({ message: "Error al crear la orden", error: error.message });
@@ -96,6 +99,9 @@ export const deleteOrden = async (req, res) => {
     }
 
     await deleteOrdenModel(ordenId);
+
+    // Emitimos un evento para notificar a todos los clientes
+    req.io.emit('ordenes_actualizadas');
     return res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar la orden", error: error.message });
@@ -115,6 +121,9 @@ export const updateOrden = async (req, res) => {
     if (!orden) return res.status(404).json({ message: "Orden no encontrada o no tienes permiso para actualizarla" });
 
     const ordenActualizada = await updateOrdenModel(ordenId, req.body);
+
+    // Emitimos un evento para notificar a todos los clientes
+    req.io.emit('ordenes_actualizadas');
 
     res.json(ordenActualizada);
   } catch (error) {
@@ -170,6 +179,9 @@ export const assignOrdenController = async (req, res) => {
     // Emitimos un evento de notificación al frontend
     req.io.emit('ordenAsignada', { tecnicoId: Number(tecnicoId), orden: updatedOrden });
 
+    // También emitimos un evento general para actualizar las listas
+    req.io.emit('ordenes_actualizadas');
+
     res.json({ message: "Orden asignada y en proceso.", orden: updatedOrden });
   } catch (error) {
     res.status(500).json({ message: "Error al asignar la orden.", error: error.message });
@@ -210,6 +222,9 @@ export const createReporteController = async (req, res) => {
     await updateOrdenModel(ordenId, {
       status: 'FINALIZADA',
     });
+
+    // Emitimos un evento para notificar a todos los clientes
+    req.io.emit('ordenes_actualizadas');
 
     res.status(201).json(newReporte);
   } catch (error) {

@@ -3,13 +3,14 @@ import { useAdmin } from '../context/AdminContext';
 import '../style/UserManagement.css';
 
 function UserManagementPage() {
-  const { allUsers, getAllUsers, updateUserRole, loading } = useAdmin();
+  const { allUsers, getAllUsers, updateUserRole, loading, totalPages } = useAdmin();
   const [selectedRole, setSelectedRole] = useState({}); // { userId: roleId }
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getAllUsers();
+    getAllUsers(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentPage]);
 
   const handleRoleChange = (userId, roleId) => {
     setSelectedRole(prev => ({ ...prev, [userId]: roleId }));
@@ -51,6 +52,13 @@ function UserManagementPage() {
           </div>
         ))}
       </div>
+
+      <div className="pagination-controls">
+        <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>Anterior</button>
+        <span>Página {currentPage} de {totalPages}</span>
+        <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>Siguiente</button>
+      </div>
+
     </div>
   );
 }

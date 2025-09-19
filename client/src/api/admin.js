@@ -10,7 +10,7 @@ export const getTecnicosRequest = () => axios.get(`/users/tecnicos`);
 export const assignOrdenRequest = (ordenId, tecnicoId) => axios.put(`/ordenes/${ordenId}/asignar`, { tecnicoId });
 
 // Obtiene todos los usuarios
-export const getAllUsersRequest = () => axios.get('/users');
+export const getAllUsersRequest = (page = 1) => axios.get(`/users?page=${page}`);
 
 // Actualiza el rol de un usuario
 export const updateUserRoleRequest = (userId, roleId) => axios.put(`/users/${userId}/role`, { roleId });
