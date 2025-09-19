@@ -1,28 +1,31 @@
-# Sistema de Gestión de Órdenes Técnicas (SGTO)
+# Sistema de Gestión de Órdenes de Trabajo (SGTO)
 
-Este proyecto es una aplicación web completa para la gestión de órdenes de servicio técnico, construida con el stack PERN (PostgreSQL, Express, React, Node.js) y utilizando Prisma como ORM.
+SGTO es una aplicación web full-stack diseñada para gestionar el ciclo de vida de las órdenes de trabajo técnico. Permite a los clientes crear solicitudes, a los administradores asignarlas a técnicos, y a los técnicos reportar el trabajo realizado.
 
 ## ✨ Características Principales
 
 - **Autenticación y Autorización por Roles**:
   - Sistema de registro e inicio de sesión seguro usando JSON Web Tokens (JWT) almacenados en cookies.
   - Tres roles de usuario definidos: **Cliente**, **Técnico** y **Administrador**.
-  - Rutas protegidas según el rol del usuario para garantizar la seguridad.
+  - Rutas y componentes de UI protegidos según el rol del usuario.
 - **Gestión de Órdenes de Servicio**:
   - Los clientes pueden crear, ver, actualizar y eliminar sus propias órdenes.
-  - Los administradores y técnicos pueden ver todas las órdenes del sistema.
+  - Flujo de estados de la orden: `PENDIENTE` -> `EN_PROCESO` -> `FINALIZADA`.
 - **Flujo de Trabajo de Administración**:
-  - Los administradores pueden ver todas las órdenes y eliminarlas si es necesario.
+  - Panel de control para visualizar todas las órdenes del sistema.
   - Asignación de órdenes a técnicos específicos.
   - Gestión de roles de usuario.
 - **Flujo de Trabajo de Técnicos**:
   - Los técnicos pueden ver las órdenes que se les han asignado.
-  - Pueden crear reportes técnicos detallados para cada orden.
+  - Creación de reportes técnicos para finalizar una orden.
+- **Notificaciones en Tiempo Real**: Los técnicos reciben una notificación instantánea cuando se les asigna una nueva orden.
+- **Actualizaciones en Tiempo Real**: Las listas de órdenes se actualizan automáticamente para todos los usuarios cuando ocurren cambios, gracias a Socket.io.
 
 ## 🛠️ Stack Tecnológico
 
 *   **Backend**:
     *   Node.js con Express
+    *   Socket.io para comunicación en tiempo real.
     *   Prisma como ORM para la gestión de la base de datos.
     *   PostgreSQL como base de datos.
     *   JSON Web Tokens (JWT) para autenticación.
@@ -32,6 +35,7 @@ Este proyecto es una aplicación web completa para la gestión de órdenes de se
     *   React Router para el enrutamiento.
     *   React Hook Form para la gestión de formularios.
     *   Context API para el manejo del estado global.
+    *   Socket.io-client para conectar con el servidor de WebSockets.
     *   Axios para las peticiones HTTP.
 
 ## 🚀 Cómo Ejecutar el Proyecto
