@@ -1,0 +1,61 @@
+.reporte-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.reporte-card {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+.reporte-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 1rem;
+}
+
+.reporte-details {
+    font-size: 1.1rem;
+    color: #34495e;
+}
+
+.reporte-details p {
+    margin-bottom: 1rem;
+}
+
+.reporte-details strong {
+    color: #2c3e50;
+}
+
+.reporte-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2980b9;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.reporte-descripcion {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    line-height: 1.6;
+    white-space: pre-wrap; /* Respeta los saltos de línea y espacios */
+}
+
+.loading-message, .error-message {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 4rem;
+    color: #7f8c8d;
+}

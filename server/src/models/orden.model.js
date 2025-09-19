@@ -1,21 +1,27 @@
 import prisma from "../db.js";
 
-export const createOrden = (data) => prisma.orden.create({ data });
-
+export const createOrden = async (data) => await prisma.orden.create({ data });
+ 
 export const getOrdenesByUser = (userId) =>
     prisma.orden.findMany({
     where: { userId: Number(userId) },
-    include: { user: true },
+    include: { user: true, reporte: true },
     });
 
 export const getOrdenesByTecnico = (tecnicoId) =>
   prisma.orden.findMany({
     where: { tecnicoAsignadoId: Number(tecnicoId) },
-    include: { user: true }, // Incluye al cliente que creó la orden
+    include: {
+      user: true, // Incluye al cliente que creó la orden
+      reporte: true,
+    },
   });
 
 export const getAllOrdenes = () =>
-  prisma.orden.findMany({ include: { user: true } });
+  prisma.orden.findMany({
+    include: { user: true, reporte: true },
+    orderBy: { createdAt: 'desc' }, // Opcional: ordena las órdenes más nuevas primero
+  });
 
 export const updateOrden = (id, data) =>
   prisma.orden.update({
@@ -59,16 +65,3 @@ export const assignOrdenToTecnico = (ordenId, tecnicoId) =>
   });
 
 export const createReporte = (data) => prisma.reporte.create({ data });
-
-export default {
-  createOrden,
-  getOrdenesByUser,
-  getOrdenesByTecnico,
-  getAllOrdenes,
-  updateOrden,
-  deleteOrden,
-  getOrdenByIdAndUser, // Exportamos la nueva función
-  getOrdenById,
-  assignOrdenToTecnico,
-  createReporte,
-};

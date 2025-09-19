@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import {createOrdenRequest, getOrdenesRequest, deleteOrdenRequest, getOrdenRequest, updateOrdenRequest} from "../api/ordenes";
+import {createOrdenRequest, getOrdenesRequest, deleteOrdenRequest, getOrdenRequest, updateOrdenRequest, getReportesRequest} from "../api/ordenes";
+import { createReporteRequest } from "../api/reportes"; // Importamos desde el nuevo archivo
 
 const OrdenContext = createContext();
 
@@ -19,6 +20,14 @@ export const useOrdenes = () => {
 export function OrdenProvider({children}) {
 
     const[ordenes, setOrdenes] = useState([]);
+    const [errors, setErrors] = useState([]); // Estado para los errores
+    const [reportes, setReportes] = useState([]);
+
+    const clearOrdenes = () => {
+        setOrdenes([]);
+        setReportes([]);
+        setErrors([]);
+    }
 
     const getOrdenes = async () => {
         try {
@@ -28,6 +37,15 @@ export function OrdenProvider({children}) {
             console.error("Error al obtener las órdenes:", error);
         }
      }; 
+
+    const getReportes = async () => {
+        try {
+            const res = await getReportesRequest();
+            setReportes(res.data);
+        } catch (error) {
+            console.error("Error al obtener los reportes:", error);
+        }
+    };
     
     const createOrden = async (orden) =>{
         const res = await createOrdenRequest(orden);
@@ -37,7 +55,7 @@ export function OrdenProvider({children}) {
     const deleteOrden = async (id) => { 
         try {
             const res = await deleteOrdenRequest(id);
-            if(res.status === 204) setOrdenes(ordenes.filter(orden => orden._id !== id));
+            if(res.status === 204) setOrdenes(ordenes.filter(orden => orden.id !== id));
             console.log("Orden eliminada con éxito");
         } catch (error) {
             console.error("Error al eliminar la orden:", error);
@@ -64,8 +82,23 @@ export function OrdenProvider({children}) {
         }
     }
 
+    const createReporte = async (id, reporte) => {
+        try {
+            await createReporteRequest(id, reporte);
+            // Actualizamos el estado de la orden a FINALIZADA en el frontend
+            setOrdenes(prev => prev.map(o => o.id === id ? {...o, status: 'FINALIZADA'} : o));
+            return true; // Indicamos que fue exitoso
+        } catch (error) {
+            // Aquí capturamos el error 403 y lo guardamos en el estado
+            if (error.response && error.response.data) {
+                setErrors([error.response.data.message]);
+            }
+            return false; // Indicamos que falló
+        }
+    }
+
     return (
-        <OrdenContext.Provider value={{ordenes,createOrden, getOrdenes, deleteOrden, getOrden, updateOrden}}>
+        <OrdenContext.Provider value={{ordenes,createOrden, getOrdenes, deleteOrden, getOrden, updateOrden, createReporte, errors, reportes, getReportes, clearOrdenes}}>
             {children}</OrdenContext.Provider>
     );
 }

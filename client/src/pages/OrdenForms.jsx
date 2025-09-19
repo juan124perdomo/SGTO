@@ -1,6 +1,6 @@
 import {   useForm } from "react-hook-form";
 import "../style/OrdenForm.css";
-import { useOrdenes } from "../context/Ordencontext";
+import { useOrdenes } from "../context/OrdenContext";
 import {useNavigate, useParams} from "react-router-dom";
 import { useEffect } from "react";
 
@@ -26,7 +26,7 @@ function OrdenForms() {
       
     loadOrden();
 
-    }, []);
+    }, [Params.id]);
 
   const onSubmit = handleSubmit((data) => {
     if (Params.id) {
@@ -41,9 +41,9 @@ function OrdenForms() {
   });
 
   return (
-    <div className="container-form">
-      <h1>Orden</h1>
-      <form onSubmit={onSubmit}>
+    <div className="form-container">
+      <form className="form-card" onSubmit={onSubmit}>
+        <h1 className="form-title">{Params.id ? "Editar Orden" : "Crear Nueva Orden"}</h1>
         <input
           type="text"
           placeholder="Título"
@@ -74,7 +74,7 @@ function OrdenForms() {
           <option value="Alta">Alta</option>
         </select>
 
-        <button>Guardar</button>
+        <button className="form-button">Guardar Orden</button>
       </form>
     </div>
   );

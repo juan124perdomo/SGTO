@@ -1,63 +1,60 @@
 // Se importan los componentes necesarios de 'react-router-dom' para manejar el enrutamiento de la aplicación.
-// BrowserRouter (renombrado como Router): Envuelve la aplicación para habilitar el enrutamiento.
-// Routes: Contenedor para un conjunto de rutas.
-// Route: Define una ruta específica y el componente que se debe renderizar.
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Se importan los componentes de las páginas que se usarán en las rutas.
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Ordenes from "./pages/Ordenes";
-import OrdenForms from "./pages/OrdenForms";
-;
-import Profile from "./pages/Profile";
-
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
+import OrdenesPage from "./pages/Ordenes";
+import OrdenFormPage from "./pages/OrdenForms";
+import ProfilePage from "./pages/Profile";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ReportePage from "./pages/ReportePage"; // Importamos la nueva página
+import ReportesListPage from "./pages/ReportesListPage"; // Importamos la lista de reportes
+import UserManagementPage from "./pages/UserManagementPage"; // Importamos la página de gestión de usuarios
+import ReporteFormPage from "./pages/ReporteFormPage"; // Importamos el formulario de reporte
 
 // Se importa el AuthProvider desde el contexto de autenticación.
 // Este proveedor dará acceso al estado y funciones de autenticación a toda la aplicación.
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
-import { OrdenProvider } from "./context/Ordencontext";
+import AdminRoute from "./AdminRoute";
+import { OrdenProvider } from "./context/OrdenContext";
+import { AdminProvider } from "./context/AdminContext";
 import Navbar from "./components/Navbar";
-
 
 function App() {
   return (
-    <>
-      {/* El componente <Router> debe envolver toda la aplicación para que todos los componentes, 
-        incluyendo el AuthProvider y las rutas, puedan reaccionar a los cambios de URL.
-      */}
-      <Router>
-        {/* El AuthProvider envuelve las rutas para que los componentes que están dentro, 
-          como ProtectedRoute, puedan acceder al estado de autenticación.
-        */}
-        <AuthProvider>
-          <OrdenProvider>
-            <Navbar />
-          <Routes>
-            {/* Cada componente Route define una ruta y el elemento que se mostrará. */}
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+    <BrowserRouter>
+      <AuthProvider>
+        <OrdenProvider>
+          <AdminProvider>
+            <main className="container mx-auto px-10">
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-            {/*
-              Un <Route> que contiene otras rutas anidadas. Todas las rutas
-              dentro de este contenedor requieren la autenticación proporcionada
-              por ProtectedRoute.
-            */}
-            <Route element={<ProtectedRoute/>}>
-              <Route path="/ordenes" element={<Ordenes/>} />
-              <Route path="/orden/new" element={<OrdenForms/>} />
-              <Route path="/ordenes/:id" element={<OrdenForms/>} />
-              <Route path="/profile" element={<Profile/>} />
-            </Route>
-          </Routes>
-          </OrdenProvider>
-          </AuthProvider>
-       
-      </Router>
-    </>
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/ordenes" element={<OrdenesPage />} />
+                  <Route path="/orden/new" element={<OrdenFormPage />} />
+                  <Route path="/ordenes/:id" element={<OrdenFormPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/ordenes/:id/reporte" element={<ReporteFormPage />} /> {/* Nueva ruta para crear reportes */}
+                  <Route path="/reportes" element={<ReportesListPage />} /> {/* Nueva ruta para la lista de reportes */}
+                <Route path="/reporte/:id" element={<ReportePage />} /> {/* Nueva ruta para ver reportes */}
+                </Route>
+
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                  <Route path="/admin/users" element={<UserManagementPage />} />
+                </Route>
+              </Routes>
+            </main>
+          </AdminProvider>
+        </OrdenProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

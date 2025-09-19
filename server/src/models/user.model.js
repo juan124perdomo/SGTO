@@ -9,6 +9,16 @@ export const findUserByEmail = (email) => {
   return prisma.user.findUnique({ where: { email } });
 };
 
+export const findUserById = (id) => {
+  return prisma.user.findUnique({
+    where: { id: Number(id) },
+    // Incluimos la información del rol relacionado
+    include: {
+      role: true,
+    },
+  });
+};
+
 // si necesitas el password (por login)
 export const findUserByEmailWithPassword = (email) => {
   return prisma.user.findUnique({
@@ -38,10 +48,11 @@ export const findUsersByRole = async (roleId) => {
   });
 };
 
-export default {
-  createUser,
-  findUserByEmail,
-  findUserByEmailWithPassword,
-  updateUserRoleById,
-  findUsersByRole,
+export const findAllUsers = () => {
+  return prisma.user.findMany({
+    include: {
+      role: true, // Incluimos la información del rol
+    },
+    orderBy: { createdAt: 'desc' },
+  });
 };

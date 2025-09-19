@@ -1,48 +1,70 @@
-*{
-    margin: 0;
-    padding: 0;
-    font-family:Arial, Helvetica, sans-serif;
-
-}
-
-.container-form{
-    text-align: center;
-    margin:  50px auto;
-}
-.container-form h1{
-    color:#000;
-    margin: 20px 0;
-}
-.container-form form{
+.form-container {
     display: flex;
-    flex-flow: row wrap;
     justify-content: center;
-    align-items: center;
-    
+    align-items: flex-start;
+    padding: 2rem;
+    min-height: 80vh;
 }
 
-.container-form form input, textarea, select{
-    width: 50%;
-    padding: 10px 15px;
-    margin: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+.form-card {
+    background-color: white;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #34495e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus {
     outline: none;
-    font-size: 1rem;
-    
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
-.container-form form button{
-    width: 50%;
-    padding: 10px; 
-    margin: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+
+.form-button {
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 6px;
     font-size: 1rem;
-    background-color: #0aa289;
-    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(45deg, #2980b9, #3498db);
+    color: white;
     cursor: pointer;
-    
+    transition: all 0.3s ease;
+    background-size: 200% auto;
 }
-.container-form form button:hover{
-    background-color: #096f5e ;
+
+.form-button:hover {
+    background-position: right center; /* Cambia la dirección del gradiente */
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    transform: translateY(-2px);
 }

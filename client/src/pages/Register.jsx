@@ -8,19 +8,6 @@ import { Link } from "react-router-dom";
 
 function Register() {
 
-  // Hook de efecto para cambiar el fondo de la página cuando el componente se monta.
-  useEffect(() => {
-    document.body.style.background = "#00e1ff";
-    document.body.style.backgroundImage = "linear-gradient(90deg, rgba(0,225,255,1) 0%, rgba(57,0,171,1) 100%)";
-    
-    // La función de retorno de useEffect se ejecuta cuando el componente se desmonta.
-    // Se usa para limpiar los estilos del body y evitar que afecten a otras páginas.
-    return () => {
-      document.body.style.background = "";
-      document.body.style.backgroundImage = "";
-    };
-  }, []); // El array de dependencias vacío asegura que el efecto se ejecute solo una vez.
-
   // Hook `useForm` de la librería react-hook-form para manejar el estado y la validación del formulario.
   const { register, handleSubmit, formState: { errors } } = useForm();
   // Se utiliza el hook `useAuth` para acceder al contexto de autenticación.

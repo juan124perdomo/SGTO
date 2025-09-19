@@ -1,7 +1,7 @@
 // Se importan los hooks de React necesarios.
 import { createContext, useState, useContext, useEffect } from "react";
 // Se importan las funciones que hacen las peticiones a la API del backend.
-import { registerRequest, loginRequest, verityTokenRequest} from "../api/auth";
+import { registerRequest, loginRequest, verityTokenRequest, getProfileRequest } from "../api/auth";
 import Cookies from "js-cookie";
 
 
@@ -39,12 +39,13 @@ export const AuthProvider = ({ children }) => {
   const signup = async (user) => {
     try {
       // Llama a la API del backend para registrar al usuario.
-      const res = await registerRequest(user);
+      await registerRequest(user);
       
-      // Si el registro es exitoso, actualiza los estados y guarda el mensaje de éxito.
-      setUser(res.data);
+      // Después del registro exitoso, obtenemos el perfil completo
+      const profileRes = await getProfileRequest();
+      setUser(profileRes.data);
       setIsAutenticated(true);
-      setSuccessMessage(res.data.message);
+      setSuccessMessage("Usuario registrado con éxito."); // Mensaje de éxito genérico
     } catch (error) {
       // Si hay un error, se captura y se actualiza el estado de errores.
       // La respuesta del backend puede venir en diferentes formatos, aquí se normaliza a un array.
@@ -63,11 +64,13 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       // Llama a la API del backend para iniciar sesión.
-      const res = await loginRequest(user);
-      // Si el inicio de sesión es exitoso, actualiza los estados y guarda el mensaje de éxito.
-      setUser(res.data);
+      await loginRequest(user);
+
+      // Después del login exitoso, obtenemos el perfil completo
+      const profileRes = await getProfileRequest();
+      setUser(profileRes.data);
       setIsAutenticated(true);
-      setSuccessMessage(res.data.message);
+      setSuccessMessage("Inicio de sesión exitoso."); // Mensaje de éxito genérico
     } catch (error) {
       // Si hay un error, se captura y se actualiza el estado de errores.
       let payload = error.response?.data;
@@ -85,6 +88,7 @@ export const AuthProvider = ({ children }) => {
       Cookies.remove("token");
       setUser(null);
       setIsAutenticated(false);
+      // Limpiamos los estados de otros contextos si es necesario aquí.
       setSuccessMessage("Sesión cerrada exitosamente");
       setError([]);
   }
@@ -127,17 +131,17 @@ export const AuthProvider = ({ children }) => {
       return setUser(null);
     } else {
       try {
-        const res = await verityTokenRequest(cookies.token);
-        console.log(res);
+        const verifyRes = await verityTokenRequest(cookies.token);
         
-        if (!res.data)  {
+        if (!verifyRes.data)  {
           setIsAutenticated(false);
-        setLoading(false);
-        return;
+          setLoading(false);
+          return;
         } 
 
-
-        setUser(res.data);
+        // Si el token es válido, obtenemos el perfil completo
+        const profileRes = await getProfileRequest();
+        setUser(profileRes.data);
         setIsAutenticated(true);
         setLoading(false);
 

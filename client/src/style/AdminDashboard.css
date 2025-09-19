@@ -1,0 +1,140 @@
+.admin-dashboard {
+    padding: 2rem;
+    background-color: #f4f7f6;
+    min-height: 100vh;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.dashboard-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.dashboard-column {
+    background-color: #e9ecef;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.column-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #bdc3c7;
+    padding-bottom: 0.5rem;
+}
+
+.card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.card-status, .card-client, .card-priority, .card-email {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    display: block; /* Asegura que cada detalle ocupe su propia línea */
+    margin-top: 0.25rem; /* Añade un pequeño espacio superior */
+}
+
+.status-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.status-pendiente {
+    background-color: #f39c12; /* Naranja */
+}
+.status-en_proceso {
+    background-color: #3498db; /* Azul */
+}
+.status-finalizada {
+    background-color: #27ae60; /* Verde */
+}
+
+.tecnico-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tecnico-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+/* Estilos para el formulario de asignación */
+.assign-form {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.assign-form select {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+}
+
+.assign-form button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #2980b9;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.assign-form button:hover:not(:disabled) {
+    background-color: #2471a3;
+}
+
+.assign-form button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}

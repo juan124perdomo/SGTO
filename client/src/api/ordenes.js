@@ -10,3 +10,4 @@ export const updateOrdenRequest = (id, orden) => axios.put(`/ordenes/${id}`, ord
 
 export const deleteOrdenRequest = (id) => axios.delete(`/ordenes/${id}`);
 
+export const getReportesRequest = () => axios.get('/reportes');

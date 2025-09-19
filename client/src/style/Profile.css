@@ -1,0 +1,62 @@
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    min-height: 80vh;
+}
+
+.profile-card {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.profile-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile-info p {
+    font-size: 1.1rem;
+    color: #34495e;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+.profile-info p strong {
+    color: #2c3e50;
+    margin-right: 0.5rem;
+}
+
+.role-badge {
+    background-color: #3498db;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Estilos específicos para cada rol */
+.role-badge.admin {
+    background-color: #e74c3c; /* Rojo */
+}
+
+.role-badge.tecnico {
+    background-color: #f39c12; /* Naranja */
+}
+

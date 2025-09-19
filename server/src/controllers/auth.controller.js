@@ -6,10 +6,12 @@ import { TOKEN_SECRET } from "../config.js";
 // importamos funciones del modelo Prisma (helpers)
 import {
   createUser,
+  findUserById, // Importamos la función para buscar por ID
   findUserByEmail,
   findUserByEmailWithPassword,
   updateUserRoleById,
   findUsersByRole,
+  findAllUsers,
 } from "../models/user.model.js";
 
 import createAccesToken from "../libs/jwt.js";
@@ -113,7 +115,7 @@ export const profile = async (req, res) => {
   try {
     // req.user viene del middleware authRequired y ya tiene id y roleId.
     // Buscamos el resto de la info del usuario.
-    const userFound = await findUserByEmail(req.user.email);
+    const userFound = await findUserById(req.user.id);
 
     if (!userFound)
       return res.status(400).json({ message: "usuario no encontrado" });
@@ -125,6 +127,8 @@ export const profile = async (req, res) => {
       telefono: userFound.telefono,
       createdAt: userFound.createdAt,
       updatedAt: userFound.updatedAt,
+      roleId: userFound.roleId,
+      roleName: userFound.role.name, // Devolvemos el nombre del rol
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -141,7 +145,10 @@ export const verifyToken = async (req, res) => {
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
     if (err) return res.status(403).json({ message: "No autorizado" });
 
-    const userFound = await findUserByEmail(user.email);
+    // Corregido: Buscar usuario por ID desde el token, no por email.
+    // El token solo contiene 'id' y 'roleId'.
+    const userFound = await findUserById(user.id);
+
     if (!userFound)
       return res.status(400).json({ message: "usuario no encontrado" });
 
@@ -149,6 +156,7 @@ export const verifyToken = async (req, res) => {
       id: userFound.id,
       username: userFound.username,
       email: userFound.email,
+      roleId: userFound.roleId, // Añadimos el roleId a la respuesta
     });
   });
 };
@@ -186,5 +194,19 @@ export const getTecnicos = async (req, res) => {
     res.json(tecnicos);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener la lista de técnicos.", error: error.message });
+  }
+};
+
+/**
+ * @description [ADMIN] Obtiene una lista de todos los usuarios del sistema.
+ */
+export const getAllUsersController = async (req, res) => {
+  try {
+    const users = await findAllUsers();
+    // Omitimos la contraseña de la respuesta
+    const usersWithoutPassword = users.map(({ password, ...user }) => user);
+    res.json(usersWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener la lista de usuarios.", error: error.message });
   }
 };
