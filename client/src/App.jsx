@@ -1,5 +1,5 @@
 // Se importan los componentes necesarios de 'react-router-dom' para manejar el enrutamiento de la aplicación.
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 // Se importan los componentes de las páginas que se usarán en las rutas.
 import LoginPage from "./pages/Login";
@@ -22,35 +22,51 @@ import { OrdenProvider } from "./context/OrdenContext";
 import { AdminProvider } from "./context/AdminContext";
 import Navbar from "./components/Navbar";
 
+// Componente contenedor para rutas que necesitan la Navbar
+function MainLayout() {
+  return (
+    <>
+      <Navbar />
+      <main className="container mx-auto px-10">
+        <Outlet />
+      </main>
+    </>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <OrdenProvider>
           <AdminProvider>
-            <main className="container mx-auto px-10">
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+            <Routes>
+              {/* Rutas públicas sin Navbar */}
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-                <Route element={<ProtectedRoute />}>
+              {/* Rutas protegidas con Navbar */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
                   <Route path="/ordenes" element={<OrdenesPage />} />
                   <Route path="/orden/new" element={<OrdenFormPage />} />
                   <Route path="/ordenes/:id" element={<OrdenFormPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/ordenes/:id/reporte" element={<ReporteFormPage />} /> {/* Nueva ruta para crear reportes */}
-                  <Route path="/reportes" element={<ReportesListPage />} /> {/* Nueva ruta para la lista de reportes */}
-                <Route path="/reporte/:id" element={<ReportePage />} /> {/* Nueva ruta para ver reportes */}
+                  <Route path="/ordenes/:id/reporte" element={<ReporteFormPage />} />
+                  <Route path="/reportes" element={<ReportesListPage />} />
+                  <Route path="/reporte/:id" element={<ReportePage />} />
                 </Route>
-
-                <Route element={<AdminRoute />}>
+              </Route>
+              
+              {/* Rutas de Admin con Navbar */}
+              <Route element={<AdminRoute />}>
+                <Route element={<MainLayout />}>
                   <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                   <Route path="/admin/users" element={<UserManagementPage />} />
                 </Route>
+              </Route>
               </Routes>
-            </main>
           </AdminProvider>
         </OrdenProvider>
       </AuthProvider>

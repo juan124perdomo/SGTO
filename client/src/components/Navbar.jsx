@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import '../style/Navbar.css';
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { useOrdenes } from "../context/OrdenContext";
 import { useEffect } from "react";
 import io from 'socket.io-client';

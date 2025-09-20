@@ -1,7 +1,7 @@
 import {  useEffect } from "react";
 import '../style/Login.css';
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -23,7 +23,11 @@ function Login() {
   },[isAutenticated, navigate]);
 
   return (
-    <div>
+    <>
+
+      <div className="logo">
+        <img src=".././../public/logo.png" alt="Logo SGTO" />
+      </div>
      <form className="form-login" onSubmit={onSubmit}>
       {/* Muestra los errores de inicio de sesión que vienen del backend */}
       {signinErrors.map((error, i)=>(
@@ -46,9 +50,9 @@ function Login() {
         {errors.password && <span>Este campo es requerido</span>}
         
         <button className="login-submit" type="submit">Iniciar Sesión</button>
-        <Link className="link" to="/register">No tienes cuenta? Registrate</Link>
+        <Link className="register" to="/register">No tienes cuenta? Registrate</Link>
       </form>
-    </div>
+    </>
 
 
   )

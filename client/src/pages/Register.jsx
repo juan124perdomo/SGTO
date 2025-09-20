@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import '../style/Register.css';
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -35,6 +35,9 @@ function Register() {
 
   return (
     <>
+     <div className="logo">
+        <img src=".././../public/logo.png" alt="Logo SGTO" />
+      </div>
       <form className="form-register" onSubmit={onSubmit}>
         {/* Se mapean y muestran los errores de registro que vienen del backend. */}
         {registerErrors.map((error, i)=>(
@@ -59,7 +62,7 @@ function Register() {
 
         <button className="register-submit" type="submit">Registrarse</button>
         {/* Enlace para ir a la página de login si el usuario ya tiene una cuenta. */}
-        <Link className="link" to="/login">Ya tienes cuenta? Inicia sesion</Link>
+        <Link className="login" to="/login">Ya tienes cuenta? Inicia sesion</Link>
       </form>
     </>
   );

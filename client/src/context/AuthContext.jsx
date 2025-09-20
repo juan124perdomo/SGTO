@@ -7,16 +7,7 @@ import Cookies from "js-cookie";
 
 // Se crea el contexto de autenticación. Este contexto permitirá compartir el estado
 // y las funciones de autenticación a través de toda la aplicación.
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  // Hook personalizado para consumir el contexto de autenticación de forma más sencilla.
-   const context = useContext(AuthContext);
-  if (!context){
-    throw new Error("useAuth must be used within an AuthProvider");
-  };
-  return context;
-};
+export const AuthContext = createContext();
 
 // El AuthProvider es un componente que envuelve a otros componentes (children)
 // para proveerles el contexto de autenticación.
