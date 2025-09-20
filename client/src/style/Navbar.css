@@ -116,20 +116,62 @@ nav a:hover::after {
     margin-right: 10px;
 }
 
+/* --- Estilos para el menú de hamburguesa --- */
+.hamburger {
+    display: none; /* Oculto en escritorio */
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+}
+
+.hamburger span {
+    height: 3px;
+    width: 25px;
+    background: #000;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
 /* --- Media Queries para hacerlo responsivo --- */
 
 /* Para tablets y dispositivos más pequeños (hasta 768px) */
-@media (max-width: 768px) {
+@media (max-width: 868px) {
     nav {
-        flex-direction: column; /* Apila el logo y la lista de enlaces */
-        align-items: flex-start; /* Alinea los elementos al inicio */
+        flex-wrap: wrap;
+        justify-content: space-between;
         padding: 15px;
     }
 
+    .hamburger {
+        display: flex; /* Mostramos la hamburguesa */
+    }
+
     nav ul {
-        flex-direction: column; /* Apila los enlaces verticalmente */
-        width: 100%; /* Ocupa todo el ancho */
-        align-items: flex-start; /* Alinea los enlaces a la izquierda */
-        margin-top: 15px; /* Añade espacio entre el logo y los enlaces */
+        /* Ocultamos el menú por defecto en móvil */
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        background-color: #ffffffaf;
+        position: absolute;
+        top: 70px; /* Ajusta según la altura de tu navbar */
+        left: 0;
+        padding: 20px 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Cuando el menú está abierto */
+    nav ul.open {
+        display: flex;
+    }
+
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    nav a:hover::after {
+        transform: scaleX(0); /* Desactivamos la animación de la línea en móvil */
     }
 }

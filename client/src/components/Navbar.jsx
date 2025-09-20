@@ -2,13 +2,14 @@ import { Link } from "react-router-dom";
 import '../style/Navbar.css';
 import { useAuth } from "../context/useAuth";
 import { useOrdenes } from "../context/OrdenContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import io from 'socket.io-client';
 
 
 
 function Navbar() {
   // Este componente Navbar es un menú de navegación simple que contiene enlaces a las páginas de inicio, inicio de sesión y registro.
+        const [isOpen, setIsOpen] = useState(false);
         const {isAutenticated,logout, user } = useAuth();
         const { clearOrdenes } = useOrdenes();
 
@@ -33,10 +34,14 @@ function Navbar() {
 
   return (
     <nav className="main-nav">
-     
-        <h1>SGTO</h1>
-     
-      <ul className="nav-links">
+      <h1>SGTO</h1>
+      <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      {/* Añadimos la clase 'open' cuando el menú está abierto */}
+      <ul className={`nav-links ${isOpen ? 'open' : ''}`}>
       {isAutenticated ? (
          <>
           <li><Link className="link-item" to="/ordenes">Mis Órdenes</Link></li>
